@@ -129,7 +129,7 @@ setInterval(exitIfStayedTooLong, 1000); // 1分ごとにチェック
 app.get('/count/:class', (req, res) => {
     const classroom = req.params.class;
     const count = countsData[classroom] || 0;
-    res.json({ classroom, count });
+    res.send(JSON.stringify(count));
 });
 
 const PORT = process.env.PORT || 3000;
