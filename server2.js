@@ -2,7 +2,13 @@ const express = require('express');
 const fs = require('fs');
 
 const app = express();
-
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // すべてのオリジンを許可
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // 許可するHTTPメソッド
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // 許可するヘッダー
+  res.setHeader('Access-Control-Allow-Credentials', true); // 許可するクッキーなどの情報
+  next();
+});
 // IPアドレスごとの入場履歴を保存するJSONファイルのパス
 const attendanceFilePath = 'attendance.json';
 // 教室ごとの人数を保存するJSONファイルのパス
