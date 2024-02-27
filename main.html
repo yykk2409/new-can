@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>蛟龍祭謎解きイベント</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>蛟龍祭謎解きイベント</h1>
+        </header>
+        <div id="puzzle-container">
+            <!-- 謎解きの要素をここに追加 -->
+            <div class="puzzle" id="puzzle1">
+                <h2>謎1</h2>
+                <p>ここに謎の説明が入ります。</p>
+                <input type="text" id="answer1" placeholder="答えを入力">
+                <button onclick="checkAnswer(1)">解答する</button>
+            </div>
+            <!-- 他の謎も同様に追加可能 -->
+        </div>
+        <div id="result-container" class="hidden">
+            <!-- 解答結果が表示される要素 -->
+            <p id="result-message"></p>
+            <button onclick="resetGame()">次の謎に挑戦する</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #2a3c4c, #0a141f);
+    color: #fff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.puzzle {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+</style>
+<script>
+// JavaScriptで謎解きのロジックを実装
+
+function checkAnswer(puzzleNumber) {
+    var answer = document.getElementById('answer' + puzzleNumber).value.toLowerCase();
+
+    // ここで正しい答えをチェックするロジックを実装
+    // 例: if (answer === '正しい答え') { showResult(true); }
+    // 謎ごとに適切なチェックを行う
+
+    // 仮の結果メッセージ
+    var isCorrect = true; // 仮の正誤判定
+    showResult(isCorrect);
+}
+
+function showResult(isCorrect) {
+    var resultContainer = document.getElementById('result-container');
+    var resultMessage = document.getElementById('result-message');
+
+    if (isCorrect) {
+        resultMessage.textContent = '正解です！';
+    } else {
+        resultMessage.textContent = '不正解です。もう一度考えてみてください。';
+    }
+
+    resultContainer.classList.remove('hidden');
+}
+
+function resetGame() {
+    var resultContainer = document.getElementById('result-container');
+    resultContainer.classList.add('hidden);
+
+    // ゲームをリセットするためのロジックをここに追加
+    // 例: 謎の内容を初期化、次の謎を表示するなど
+}
+
+
+</script>
