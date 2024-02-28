@@ -45,23 +45,11 @@ loadCountsData();
 
 // 入場処理
 app.get('/enter/:class', (req, res) => {
-    const classroom = req.params.class;
-	var clientIP = function (req){
+	const classroom = req.params.class;
+	const remoteAddress = req.connection.remoteAddress;
 
-		var ip = '0.0.0.0';
-
-		if (request.headers['x-forwarded-for']) {
-			ip = request.headers['x-forwarded-for'];
-		}else if (request.connection && request.connection.remoteAddress) {
-			ip = request.connection.remoteAddress;
-		}else if (request.connection.socket && request.connection.socket.remoteAddress) {
-			ip = request.connection.socket.remoteAddress;
-		}else if (request.socket && request.socket.remoteAddress) {
-			ip = request.socket.remoteAddress;
-		}
-
-		return ip;
-	};
+	const splittedAddress = remoteAddress.split(':');
+	const clientIP = splittedAddress[splittedAddress.length - 1];
 	console.log(clientIP)
 
     // IPアドレスごとの入場履歴と時間を更新
@@ -153,22 +141,10 @@ function exitIfStayedTooLong() {
 // 一定間隔で退場処理を実行
 setInterval(exitIfStayedTooLong, 1000); // 1分ごとにチェック
 app.post('/form_send', (req, res) => {
-	var clientIP = function(request){
+	const remoteAddress = req.connection.remoteAddress;
 
-		var ip = '0.0.0.0';
-
-		if (request.headers['x-forwarded-for']) {
-			ip = request.headers['x-forwarded-for'];
-		}else if (request.connection && request.connection.remoteAddress) {
-			ip = request.connection.remoteAddress;
-		}else if (request.connection.socket && request.connection.socket.remoteAddress) {
-			ip = request.connection.socket.remoteAddress;
-		}else if (request.socket && request.socket.remoteAddress) {
-			ip = request.socket.remoteAddress;
-		}
-
-		return ip;
-	};
+	const splittedAddress = remoteAddress.split(':');
+	const clientIP = splittedAddress[splittedAddress.length - 1];
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
