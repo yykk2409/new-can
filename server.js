@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const { readFileSync ,writeFileSync} = require("fs");
+const { readFileSync, writeFileSync } = require("fs");
 
 // サンプルのユーザーデータベース
 const users = [
@@ -12,11 +12,11 @@ const nodemailer = require('nodemailer');
 
 // 送信元のメールアカウント情報
 const transporter = nodemailer.createTransport({
-    service: 'Gmail', // または自分のSMTPサーバーの設定に合わせて変更
-    auth: {
-        user: 'honbu.koryo.fes@gmail.com', // 送信元のメールアドレス
-        pass: 'Koryo2024' // 送信元のメールアカウントのパスワードまたはアプリパスワード
-    }
+  service: 'Gmail', // または自分のSMTPサーバーの設定に合わせて変更
+  auth: {
+    user: 'honbu.koryo.fes@gmail.com', // 送信元のメールアドレス
+    pass: 'Koryo2024' // 送信元のメールアカウントのパスワードまたはアプリパスワード
+  }
 });
 
 // 送信先のメールアドレス
@@ -24,15 +24,15 @@ const toEmail = 'maetaka-2022066@edu-g.gsn.ed.jp'; // 送信先のメールア�
 
 // メールの内容
 const mailOptions = {
-    from: 'your_email@gmail.com', // 送信元のメールアドレス
-    to: toEmail, // 送信先のメールアドレス
-    subject: '蛟龍祭謎解きイベント', // メールの件名
-    text: '正解しました。', // メールの本文
+  from: 'your_email@gmail.com', // 送信元のメールアドレス
+  to: toEmail, // 送信先のメールアドレス
+  subject: '蛟龍祭謎解きイベント', // メールの件名
+  text: '正解しました。', // メールの本文
 };
 
 app.use(bodyParser.json());
 app.get('/', (req, resp) => {
-    resp.status(200).send(readFileSync("./test.html", {encoding: "utf-8"}));
+  resp.status(200).send(readFileSync("./test.html", { encoding: "utf-8" }));
 });
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -60,19 +60,19 @@ app.post('/signup', (req, res) => {
     res.status(401).json({ error: '認証失敗' });
   }
 });
-app.post("/answer",(req,res) =>{
-	txt = req.body.text
-	console.log(txt)
-	if(txt === '蛟龍祭'){
-		res.status(200).send("<h1 style=color:red;font-size:100px;>正解です。</h1><br><p style=color:white;>受付カウンターにて景品を受け取ってください。</p>");
-		transporter.sendMail(mailOptions, (error, info) => {
-			if (error) {
-				return console.error(error);
-			}
-		});
-	}else{
-		res.status(200).send("<h1 style=color:blue;font-size:100px;>不正解です。</h1><br><p style=color:white;>ヒントを集めましょう</p>");
-	}
+app.post("/answer", (req, res) => {
+  txt = req.body.text
+  console.log(txt)
+  if (txt === '蛟龍祭') {
+    res.status(200).send("<h1 style=color:red;font-size:100px;>正解です。</h1><br><p style=color:white;>受付カウンターにて景品を受け取ってください。</p>");
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.error(error);
+      }
+    });
+  } else {
+    res.status(200).send("<h1 style=color:blue;font-size:100px;>不正解です。</h1><br><p style=color:white;>ヒントを集めましょう</p>");
+  }
 })
 function generateToken() {
   const tokenLength = 20; // トークンの長さ
