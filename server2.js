@@ -46,7 +46,7 @@ loadCountsData();
 // 入場処理
 app.get('/enter/:class', (req, res) => {
     const classroom = req.params.class;
-    const ip = req.ip;
+    const ip = req.connection.remoteAddress;
 
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
@@ -137,7 +137,7 @@ function exitIfStayedTooLong() {
 // 一定間隔で退場処理を実行
 setInterval(exitIfStayedTooLong, 1000); // 1分ごとにチェック
 app.post('/form_send', (req, res) => {
-    const ip = req.ip;
+    const ip = req.connection.remoteAddress;
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
