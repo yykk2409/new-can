@@ -46,7 +46,7 @@ loadCountsData();
 // 入場処理
 app.get('/enter/:class', (req, res) => {
     const classroom = req.params.class;
-	var clientIP = function(request){
+	var clientIP = function (req){
 
 		var ip = '0.0.0.0';
 
