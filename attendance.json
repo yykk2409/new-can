@@ -1,9 +1,11 @@
 {
   "::1": {
+    "age": "10代",
+    "gender": "男性",
     "classrooms": [
       "A",
       "NaN"
     ],
-    "timestamp": 1709037458289
+    "timestamp": 1709084383061
   }
 }

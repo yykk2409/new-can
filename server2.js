@@ -9,6 +9,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', true); // 許可するクッキーなどの情報
   next();
 });
+app.use(express.json())
 // IPアドレスごとの入場履歴を保存するJSONファイルのパス
 const attendanceFilePath = 'attendance.json';
 // 教室ごとの人数を保存するJSONファイルのパス
@@ -50,8 +51,13 @@ app.get('/enter/:class', (req, res) => {
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
     if (!attendanceData[ip] ) {
-        attendanceData[ip] = { classrooms: [], timestamp: currentTime };
+        attendanceData[ip] = {age:'NaN',gender:'NaN', classrooms: [], timestamp: currentTime };
     }
+	 if (attendanceData[ip].age == 'NaN'|| attendanceData[ip].gender == 'NaN'){
+		  res.sendFile(__dirname + '/form.html');
+		  console.log("sendfile")
+		  return
+	 }
 	 attendanceData[ip].timestamp = currentTime
 	 if (attendanceData[ip].classrooms[attendanceData[ip].classrooms.length - 1] == 'NaN') {
         attendanceData[ip].classrooms.pop();
@@ -130,7 +136,19 @@ function exitIfStayedTooLong() {
 
 // 一定間隔で退場処理を実行
 setInterval(exitIfStayedTooLong, 1000); // 1分ごとにチェック
+app.post('/form_send', (req, res) => {
+    const ip = req.ip;
+    const { age, gender } = req.body;
 
+    // フォームデータを入場データに保存
+    attendanceData[ip].age = age;
+    attendanceData[ip].gender = gender;
+	console.log('Age:', age);
+	console.log('Gender:', gender);
+
+    // レスポンスを送信
+    res.send('Form data received successfully');
+});
 // 教室ごとの人数を取得
 app.get('/count/:class', (req, res) => {
     const classroom = req.params.class;
