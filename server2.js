@@ -108,7 +108,7 @@ function exitIfStayedTooLong() {
     const currentTime = new Date().getTime();
     for (const ip in attendanceData) {
         const { classrooms, timestamp } = attendanceData[ip];
-        if (classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] !== 'NaN' && (currentTime - timestamp) >= 15 * 1000) {
+        if (classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] !== 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000) {
             const lastClassroom = classrooms[classrooms.length - 1];
             countsData[lastClassroom] = (countsData[lastClassroom] || 0) - 1;
             console.log(`User with IP ${ip} has exited from classroom ${lastClassroom}`);
@@ -116,7 +116,7 @@ function exitIfStayedTooLong() {
 			   console.log(ip+"の入場履歴は"+attendanceData[ip].classrooms)
             attendanceData[ip].classrooms.push('NaN'); // NaNを追加
             attendanceData[ip].timestamp = currentTime; // 入場時間更新
-        }else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 1000){
+        }else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000){
 			   attendanceData[ip].timestamp = currentTime; 
 		  }
     }
