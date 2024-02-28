@@ -62,6 +62,7 @@ app.get('/enter/:class', (req, res) => {
 
 		return ip;
 	};
+	console.log(clientIP)
 
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
