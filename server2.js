@@ -82,13 +82,17 @@ app.get('/enter/:class', (req, res) => {
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
     if (!attendanceData[clientIP] ) {
-        attendanceData[clientIP] = {age:'NaN',gender:'NaN', classrooms: [], timestamp: currentTime };
+        attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n" classrooms: [], timestamp: currentTime };
     }
 	 if (attendanceData[clientIP].age == 'NaN'|| attendanceData[clientIP].gender == 'NaN'){
 		  res.sendFile(__dirname + '/form.html');
 		  console.log("sendfile")
 		  return
 	 }
+	if (attendanceData[clientIP].main == "n"){
+		countsData["main"] = (countsData["main"] || 0) + 1;
+		attendanceData[clientIP].main = "y"
+	}
 	 attendanceData[clientIP].timestamp = currentTime
 	 if (attendanceData[clientIP].classrooms[attendanceData[clientIP].classrooms.length - 1] == 'NaN') {
         attendanceData[clientIP].classrooms.pop();
