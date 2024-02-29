@@ -118,44 +118,52 @@
 </body>
 </html>
   <script>
-    document.getElementById('myForm').addEventListener('submit', function(event) {
-		 event.preventDefault(); // デフォルトのフォーム送信を無効化
+    // フォーム送信後にリダイレクトする関数
+function redirectToEnterClass(classroom) {
+    window.location.href = '/enter/' + classroom;
+}
 
-		 const formData = new FormData(this); // フォームデータを取得
+// フォームの送信イベントハンドラ
+document.getElementById('myForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // デフォルトのフォーム送信を無効化
 
-		 // フォームデータから年齢を取得
-		 const age = formData.get('age');
+    const formData = new FormData(this); // フォームデータを取得
 
-		 // フォームデータから性別を取得
-		 const genderInputs = document.getElementsByName('gender');
-		 let gender;
-		 for (const input of genderInputs) {
-			 if (input.checked) {
-				 gender = input.value;
-				 break;
-			 }
-		 }
-      // /form_send に POST リクエストを送信
-      fetch("/form_send", {
+    // フォームデータから年齢を取得
+    const age = formData.get('age');
+
+    // フォームデータから性別を取得
+    const genderInputs = document.getElementsByName('gender');
+    let gender;
+    for (const input of genderInputs) {
+        if (input.checked) {
+            gender = input.value;
+            break;
+        }
+    }
+
+    // /form_send に POST リクエストを送信
+    fetch("/form_send", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({ age, gender })
-      })
-      .then(response => {
+    })
+    .then(response => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+            throw new Error('Network response was not ok');
         }
         return response.text(); // テキスト形式でレスポンスを取得
-      })
-      .then(data => {
+    })
+    .then(data => {
         console.log('Success:', data);
-        // レスポンスをログに表示するなど、適切な処理を追加
-      })
-      .catch(error => {
+        const classroom = 'main'; // ここでクラスを指定
+        redirectToEnterClass(classroom); // リダイレクトを行う
+    })
+    .catch(error => {
         console.error('Error:', error);
         // エラー処理を追加
-      });
     });
+});
   </script>
