@@ -48,7 +48,8 @@ app.get("/enter-main",(req,res) =>{
 
 	const splittedAddress = remoteAddress.split(':');
 	const clientIP = splittedAddress[splittedAddress.length - 1];
-	const currentTime = new Date().getTime();
+	console.log(clientIP)
+	/*const currentTime = new Date().getTime();
 	if (!attendanceData[clientIP] ) {
 		attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
 	}
@@ -60,9 +61,10 @@ app.get("/enter-main",(req,res) =>{
 	if (attendanceData[clientIP].main == "n"){
 		countsData["main"] = (countsData["main"] || 0) + 1;
 		attendanceData[clientIP].main = "y"
-	}
+	}*/
 	res.json({message:"蛟龍祭へようこそ"})
 });
+/*
 // 入場処理
 app.get('/enter/:class', (req, res) => {
 	const classroom = req.params.class;
@@ -182,7 +184,7 @@ app.get('/count/:class', (req, res) => {
     const count = countsData[classroom] || 0;
     console.log("/count get")
     res.json({count});
-});
+});*/
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
