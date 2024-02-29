@@ -47,9 +47,11 @@ app.get("/enter-main",(req,res) =>{
 	const remoteAddress = req.connection.remoteAddress;
 
 	const splittedAddress = remoteAddress.split(':');
-	const clientIP = splittedAddress[splittedAddress.length - 1];
+	//const clientIP = splittedAddress[splittedAddress.length - 1];
+
+	const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	console.log(clientIP)
-	/*const currentTime = new Date().getTime();
+	const currentTime = new Date().getTime();
 	if (!attendanceData[clientIP] ) {
 		attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
 	}
@@ -61,17 +63,18 @@ app.get("/enter-main",(req,res) =>{
 	if (attendanceData[clientIP].main == "n"){
 		countsData["main"] = (countsData["main"] || 0) + 1;
 		attendanceData[clientIP].main = "y"
-	}*/
+	}
 	res.json({message:clientIP+"蛟龍祭へようこそ"})
 });
-/*
+
 // 入場処理
 app.get('/enter/:class', (req, res) => {
 	const classroom = req.params.class;
 	const remoteAddress = req.connection.remoteAddress;
 
 	const splittedAddress = remoteAddress.split(':');
-	const clientIP = splittedAddress[splittedAddress.length - 1];
+	const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	//const clientIP = splittedAddress[splittedAddress.length - 1];
 	console.log(clientIP)
 
     // IPアドレスごとの入場履歴と時間を更新
@@ -184,7 +187,7 @@ app.get('/count/:class', (req, res) => {
     const count = countsData[classroom] || 0;
     console.log("/count get")
     res.json({count});
-});*/
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
