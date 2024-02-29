@@ -158,8 +158,7 @@ document.getElementById('myForm').addEventListener('submit', function(event) {
     })
     .then(data => {
         console.log('Success:', data);
-        const classroom = 'main'; // ここでクラスを指定
-        redirectToEnterClass(classroom); // リダイレクトを行う
+
     })
     .catch(error => {
         console.error('Error:', error);
