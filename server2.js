@@ -62,7 +62,7 @@ app.get("/enter-main",(req,res) =>{
 		countsData["main"] = (countsData["main"] || 0) + 1;
 		attendanceData[clientIP].main = "y"
 	}*/
-	res.json({message:"蛟龍祭へようこそ"})
+	res.json({message:clientIP+"蛟龍祭へようこそ"})
 });
 /*
 // 入場処理
