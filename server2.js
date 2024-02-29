@@ -188,6 +188,9 @@ app.get('/count/:class', (req, res) => {
     console.log("/count get")
     res.json({count});
 });
+app.get('/attendancedata.json', (req, res) => {
+    res.json({attendanceData});
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
