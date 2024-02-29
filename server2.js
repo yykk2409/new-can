@@ -65,7 +65,7 @@ app.get("/enter-main",(req,res) =>{
 		countsData["main"] = (countsData["main"] || 0) + 1;
 		attendanceData[clientIP].main = "y"
 	}
-	res.json({message:clientIP+"蛟龍祭へようこそ"})
+	res.redirect("https://koryo-fes.studio.site");
 });
 
 // 入場処理
