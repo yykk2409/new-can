@@ -117,52 +117,59 @@
   </div>
 </body>
 </html>
-  <script>
-    // フォーム送信後にリダイレクトする関数
-function redirectToEnterClass(classroom) {
-    window.location.href = '/enter/' + classroom;
-}
-
-// フォームの送信イベントハンドラ
-document.getElementById('myForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // デフォルトのフォーム送信を無効化
-
-    const formData = new FormData(this); // フォームデータを取得
-
-    // フォームデータから年齢を取得
-    const age = formData.get('age');
-
-    // フォームデータから性別を取得
-    const genderInputs = document.getElementsByName('gender');
-    let gender;
-    for (const input of genderInputs) {
-        if (input.checked) {
-            gender = input.value;
-            break;
-        }
+<script>
+    // 現在のページのURLを取得する関数
+    function getCurrentURL() {
+        return window.location.href;
     }
 
-    // /form_send に POST リクエストを送信
-    fetch("/form_send", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ age, gender })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.text(); // テキスト形式でレスポンスを取得
-    })
-    .then(data => {
-        console.log('Success:', data);
+    // フォーム送信後にリダイレクトする関数
+    function redirectToOriginalURL() {
+        const originalURL = getCurrentURL(); // 現在のページのURLを取得
+        window.location.href = originalURL; // 現在のページのURLにリダイレクト
+    }
 
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // エラー処理を追加
+    // フォームの送信イベントハンドラ
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // デフォルトのフォーム送信を無効化
+
+        const formData = new FormData(this); // フォームデータを取得
+
+        // フォームデータから年齢を取得
+        const age = formData.get('age');
+
+        // フォームデータから性別を取得
+        const genderInputs = document.getElementsByName('gender');
+        let gender;
+        for (const input of genderInputs) {
+            if (input.checked) {
+                gender = input.value;
+                break;
+            }
+        }
+
+        // /form_send に POST リクエストを送信
+        fetch("/form_send", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ age, gender })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // テキスト形式でレスポンスを取得
+        })
+        .then(data => {
+            console.log('Success:', data);
+            // フォーム送信成功後にリダイレクト
+            redirectToOriginalURL();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // エラー処理を追加
+        });
     });
-});
-  </script>
+</script>
