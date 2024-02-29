@@ -74,7 +74,8 @@ app.get('/enter/:class', (req, res) => {
 	const remoteAddress = req.connection.remoteAddress;
 
 	const splittedAddress = remoteAddress.split(':');
-	const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
+  const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	//const clientIP = splittedAddress[splittedAddress.length - 1];
 	console.log(clientIP)
 
@@ -170,7 +171,8 @@ app.post('/form_send', (req, res) => {
 	const remoteAddress = req.connection.remoteAddress;
 
 	const splittedAddress = remoteAddress.split(':');
-	const clientIP = splittedAddress[splittedAddress.length - 1];
+	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
+  const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
