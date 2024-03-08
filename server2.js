@@ -15,10 +15,7 @@ const attendanceFilePath = 'attendance.json';
 // 教室ごとの人数を保存するJSONファイルのパス
 const countsFilePath = 'counts.json';
 
-// IPアドレスごとの入場履歴と入場時間を保持するオブジェクト
-let attendanceData = {};
-// 教室ごとの人数を保持するオブジェクト
-let countsData = {};
+const quizFilePath = 'quiz.json';
 
 // JSONファイルからデータを読み込む関数
 function loadAttendanceData() {
@@ -39,9 +36,18 @@ function loadCountsData() {
     }
 }
 
+function loadQuizData() {
+    try {
+        const data = fs.readFileSync(quizFilePath);
+        quizData = JSON.parse(data);
+    } catch (err) {
+        console.error('Error reading counts file:', err);
+    }
+}
 // 初期読み込み
 loadAttendanceData();
 loadCountsData();
+loadQuizData();
 app.get("/enter-main",(req,res) =>{
 	const classroom = req.params.class;
 	const remoteAddress = req.connection.remoteAddress;
@@ -197,6 +203,16 @@ app.get('/count/:class', (req, res) => {
 });
 app.get('/attendancedata.json', (req, res) => {
     res.json({attendanceData});
+});
+
+app.post('/quiz/:number',(req, res) =>{
+	const number = req.params.number;
+	const answer = req.body.answer
+	console.log(answer)
+	if (answer === quizData.answer[number]){
+		console.log("正解")
+		res.send("ok")
+	}
 });
 
 const PORT = process.env.PORT || 3000;
