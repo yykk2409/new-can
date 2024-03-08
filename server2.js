@@ -208,7 +208,6 @@ app.get('/attendancedata.json', (req, res) => {
 app.post('/quiz/:number',(req, res) =>{
 	const number = req.params.number;
 	const answer = req.body.answer
-	console.log(answer)
 	if (answer === quizData.answer[number]){
 		console.log("正解")
 		res.send("ok")
