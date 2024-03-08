@@ -205,7 +205,7 @@ app.get('/attendancedata.json', (req, res) => {
     res.json({attendanceData});
 });
 
-app.get('/quiz/:number', (req, res) => {
+app.post('/quiz/:number', (req, res) => {
     const number = req.params.number;
     const answer = req.body.answer;
 
@@ -218,7 +218,7 @@ app.get('/quiz/:number', (req, res) => {
         res.send("正解");
     } else {
         console.log("不正解");
-        res.status(400).send("不正解");
+        res.send("不正解");
     }
 });
 const PORT = process.env.PORT || 3000;
