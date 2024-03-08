@@ -205,7 +205,7 @@ app.get('/attendancedata.json', (req, res) => {
     res.json({attendanceData});
 });
 
-app.post('/quiz/:number', (req, res) => {
+app.get('/quiz/:number', (req, res) => {
     const number = req.params.number;
     const answer = req.body.answer;
 
