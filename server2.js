@@ -205,15 +205,22 @@ app.get('/attendancedata.json', (req, res) => {
     res.json({attendanceData});
 });
 
-app.post('/quiz/:number',(req, res) =>{
-	const number = req.params.number;
-	const answer = req.body.answer
-	if (answer === quizData.answer[number]){
-		console.log("正解")
-		res.send("ok")
-	}
-});
+app.post('/quiz/:number', (req, res) => {
+    const number = req.params.number;
+    const answer = req.body.answer;
 
+    // 正しい答えを取得（quizDataは適切に定義されていると仮定）
+    const correctAnswer = quizData.answer[number];
+
+    // 正解かどうかをチェック
+    if (answer === correctAnswer) {
+        console.log("正解");
+        res.send("正解");
+    } else {
+        console.log("不正解");
+        res.status(400).send("不正解");
+    }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
