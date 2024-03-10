@@ -144,7 +144,7 @@ app.get('/enter/:class', (req, res) => {
                 res.status(500).send('Internal Server Error');
                 return;
             }
-            res.json({ message: 'Entered classroom successfully' });
+            res.json({ message: 'Entered' + classroom + 'successfully' });
         });
     });
 	 console.log(clientIP+"の入場履歴は"+attendanceData[clientIP].classrooms)
