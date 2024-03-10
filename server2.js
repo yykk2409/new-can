@@ -14,7 +14,7 @@ app.use(express.json())
 const attendanceFilePath = 'attendance.json';
 // 教室ごとの人数を保存するJSONファイルのパス
 const countsFilePath = 'counts.json';
-
+const classFilePath = 'class.json';
 const quizFilePath = 'quiz.json';
 
 // JSONファイルからデータを読み込む関数
@@ -35,7 +35,14 @@ function loadCountsData() {
         console.error('Error reading counts file:', err);
     }
 }
-
+function loadclassData() {
+    try {
+        const data = fs.readFileSync(classFilePath);
+        classData = JSON.parse(data);
+    } catch (err) {
+        console.error('Error reading counts file:', err);
+    }
+}
 function loadQuizData() {
     try {
         const data = fs.readFileSync(quizFilePath);
@@ -47,9 +54,9 @@ function loadQuizData() {
 // 初期読み込み
 loadAttendanceData();
 loadCountsData();
+loadclassData();
 loadQuizData();
 app.get("/enter-main",(req,res) =>{
-	const classroom = req.params.class;
 	const remoteAddress = req.connection.remoteAddress;
 
 	const splittedAddress = remoteAddress.split(':');
@@ -76,7 +83,7 @@ app.get("/enter-main",(req,res) =>{
 
 // 入場処理
 app.get('/enter/:class', (req, res) => {
-	const classroom = req.params.class;
+	const classroom = classData[req.params.class];
 	const remoteAddress = req.connection.remoteAddress;
 
 	const splittedAddress = remoteAddress.split(':');
