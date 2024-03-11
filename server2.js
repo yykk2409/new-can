@@ -17,6 +17,8 @@ const countsFilePath = 'counts.json';
 
 const quizFilePath = 'quiz.json';
 
+const scheduleFilePath = 'schedule.json';
+
 // JSONファイルからデータを読み込む関数
 function loadAttendanceData() {
     try {
@@ -41,13 +43,26 @@ function loadQuizData() {
         const data = fs.readFileSync(quizFilePath);
         quizData = JSON.parse(data);
     } catch (err) {
-        console.error('Error reading counts file:', err);
+        console.error('Error reading quiz file:', err);
     }
 }
+function loadscheduleData() {
+    try {
+        const data = fs.readFileSync(scheduleFilePath);
+        scheduleData = JSON.parse(data);
+    } catch (err) {
+        console.error('Error reading schedule file:', err);
+    }
+}
+let attendanceData = [];
+let countsData = [];
+let quizData = [];
+let scheduleData = [];
 // 初期読み込み
 loadAttendanceData();
 loadCountsData();
 loadQuizData();
+loadscheduleData();
 app.get("/enter-main",(req,res) =>{
 	const classroom = req.params.class;
 	const remoteAddress = req.connection.remoteAddress;
@@ -220,6 +235,33 @@ app.post('/quiz/:number', (req, res) => {
         console.log("不正解");
         res.send("不正解");
     }
+});
+
+app.get('/schedule', (req, res) => {
+    res.sendFile(__dirname + '/schedule.html');
+    console.log("sendschedule")
+});
+
+app.post('/api/schedule', (req, res) => {
+    const scheduleDatas = req.body;
+    scheduleData.push(scheduleDatas);
+
+    fs.writeFile("schedule.json", JSON.stringify(existingSchedule), (err) => {
+        if (err) {
+            console.error('Error writing file:', err);
+            res.status(500).send('Error writing file');
+            return;
+        }
+
+        console.log('Schedule saved successfully');
+        res.status(200).send('Schedule saved successfully');
+    });
+});
+
+// Endpoint to get schedule
+app.get('/api/schedule', (req, res) => {
+    console.log(scheduleData)
+    res.json(scheduleData);
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
