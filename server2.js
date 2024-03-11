@@ -19,6 +19,10 @@ const quizFilePath = 'quiz.json';
 
 const scheduleFilePath = 'schedule.json';
 
+let attendanceData = [];
+let countsData = [];
+let quizData = [];
+let scheduleData = [];
 // JSONファイルからデータを読み込む関数
 function loadAttendanceData() {
     try {
@@ -61,16 +65,16 @@ function loadscheduleData() {
         console.error('Error reading schedule file:', err);
     }
 }
-let attendanceData = [];
-let countsData = [];
-let quizData = [];
-let scheduleData = [];
+
 // 初期読み込み
 loadAttendanceData();
 loadCountsData();
 loadclassData();
 loadQuizData();
 loadscheduleData();
+
+
+
 app.get("/enter-main",(req,res) =>{
 	const remoteAddress = req.connection.remoteAddress;
 
