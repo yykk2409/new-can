@@ -251,12 +251,21 @@ app.get('/schedule', (req, res) => {
 
 app.post('/api/schedule', (req, res) => {
     const scheduleDatas = req.body;
-    scheduleData.push(scheduleDatas);
+    let scheduleDataArray = [];
 
-    fs.writeFile("schedule.json", JSON.stringify(existingSchedule), (err) => {
+    try {
+        const data = fs.readFileSync(scheduleFilePath);
+        scheduleDataArray = JSON.parse(data);
+    } catch (err) {
+        console.error('Error reading schedule file:', err);
+    }
+
+    scheduleDataArray.push(scheduleDatas);
+
+    fs.writeFile(scheduleFilePath, JSON.stringify(scheduleDataArray), (err) => {
         if (err) {
-            console.error('Error writing file:', err);
-            res.status(500).send('Error writing file');
+            console.error('Error writing schedule file:', err);
+            res.status(500).send('Error writing schedule file');
             return;
         }
 
@@ -264,6 +273,7 @@ app.post('/api/schedule', (req, res) => {
         res.status(200).send('Schedule saved successfully');
     });
 });
+
 
 // Endpoint to get schedule
 app.get('/api/schedule', (req, res) => {

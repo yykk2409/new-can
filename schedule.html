@@ -108,11 +108,14 @@
                 const scheduleList = document.getElementById('scheduleList');
                 scheduleList.innerHTML = '';
 
+                // 空のオブジェクトの場合は空の配列に変換する
+                const scheduleArray = Array.isArray(schedule) ? schedule : [];
+
                 const loc = document.getElementById('loc').value;
                 const day = document.getElementById('day').value;
 
                 // Filter and sort schedule items
-                const filteredSchedule = schedule.filter(item => item.loc === loc && item.day === day);
+                const filteredSchedule = scheduleArray.filter(item => item.loc === loc && item.day === day);
                 const sortedSchedule = filteredSchedule.sort((a, b) => new Date('1970/01/01 ' + a.startTime) - new Date('1970/01/01 ' + b.startTime));
 
                 const ul = document.createElement('ul');
