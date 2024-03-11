@@ -22,7 +22,7 @@ const scheduleFilePath = 'schedule.json';
 let attendanceData = [];
 let countsData = [];
 let quizData = [];
-let scheduleData = [];
+
 // JSONファイルからデータを読み込む関数
 function loadAttendanceData() {
     try {
@@ -63,6 +63,7 @@ function loadscheduleData() {
         scheduleData = JSON.parse(data);
     } catch (err) {
         console.error('Error reading schedule file:', err);
+        let scheduleData = [];
     }
 }
 
