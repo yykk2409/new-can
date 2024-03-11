@@ -258,7 +258,11 @@ app.get('/schedule', (req, res) => {
 app.post('/api/schedule', (req, res) => {
     const scheduleDatas = req.body;
 
-    fs.writeFile(scheduleFilePath, JSON.stringify(scheduleDatas), (err) => {
+    // 新しいスケジュールデータを既存のデータに追加する
+    scheduleData.push(scheduleDatas);
+
+    // スケジュールデータをファイルに書き込む
+    fs.writeFile(scheduleFilePath, JSON.stringify(scheduleData), (err) => {
         if (err) {
             console.error('Error writing schedule file:', err);
             res.status(500).send('Error writing schedule file');
