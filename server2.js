@@ -255,18 +255,8 @@ app.get('/schedule', (req, res) => {
 
 app.post('/api/schedule', (req, res) => {
     const scheduleDatas = req.body;
-    let scheduleDataArray = [];
 
-    try {
-        const data = fs.readFileSync(scheduleFilePath);
-        scheduleDataArray = JSON.parse(data);
-    } catch (err) {
-        console.error('Error reading schedule file:', err);
-    }
-
-    scheduleDataArray.push(scheduleDatas);
-
-    fs.writeFile(scheduleFilePath, JSON.stringify(scheduleDataArray), (err) => {
+    fs.writeFile(scheduleFilePath, JSON.stringify(scheduleDatas), (err) => {
         if (err) {
             console.error('Error writing schedule file:', err);
             res.status(500).send('Error writing schedule file');
