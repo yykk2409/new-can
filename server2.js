@@ -230,7 +230,9 @@ app.get('/count/:class', (req, res) => {
 app.get('/attendancedata.json', (req, res) => {
     res.json({attendanceData});
 });
-
+app.get('/scheduledata.json', (req, res) => {
+    res.json({scheduleData});
+});
 app.post('/quiz/:number', (req, res) => {
     const number = req.params.number;
     const answer = req.body.answer;
