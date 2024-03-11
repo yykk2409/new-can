@@ -22,7 +22,7 @@ const scheduleFilePath = 'schedule.json';
 let attendanceData = [];
 let countsData = [];
 let quizData = [];
-
+let scheduleData = [];
 // JSONファイルからデータを読み込む関数
 function loadAttendanceData() {
     try {
@@ -63,7 +63,6 @@ function loadscheduleData() {
         scheduleData = JSON.parse(data);
     } catch (err) {
         console.error('Error reading schedule file:', err);
-        let scheduleData = [];
     }
 }
 
@@ -259,8 +258,11 @@ app.get('/schedule', (req, res) => {
 app.post('/api/schedule', (req, res) => {
     const scheduleDatas = req.body;
 
-    // 新しいスケジュールデータを既存のデータに追加する
-    scheduleData.push(scheduleDatas);
+    // 既存のスケジュールデータを読み込む
+    loadscheduleData();
+
+    // 既存のスケジュールデータと新しいスケジュールデータをマージまたは上書きする
+    scheduleData = scheduleDatas;
 
     // スケジュールデータをファイルに書き込む
     fs.writeFile(scheduleFilePath, JSON.stringify(scheduleData), (err) => {
@@ -274,7 +276,6 @@ app.post('/api/schedule', (req, res) => {
         res.status(200).send('Schedule saved successfully');
     });
 });
-
 
 // Endpoint to get schedule
 app.get('/api/schedule', (req, res) => {
