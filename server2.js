@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const { Octokit } = require("@octokit/rest");
 
 const app = express();
 app.use((req, res, next) => {
@@ -10,6 +11,38 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json())
+
+// GitHubの認証情報
+const octokit = new Octokit({
+    auth: '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', // この行を適切なGitHubトークンに置き換えてください
+});
+
+const owner = 'yykk2409'; // リポジトリの所有者
+const repo = 'new-can'; // リポジトリ名
+
+// GitHubにファイルを書き込む関数
+/*async function writeFileToGitHub(filePath, content) {
+    let file;
+    try {
+        file = await octokit.repos.getContents({ owner, repo, path: filePath });
+    } catch (e) {
+        if (e.status !== 404) {
+            throw e;
+        }
+        file = null;
+    }
+
+    await octokit.repos.createOrUpdateFile({
+        owner,
+        repo,
+        path: filePath,
+        message: 'Commit message',
+        content: Buffer.from(content).toString('base64'),
+        sha: file ? file.data.sha : null,
+    });
+}
+*/
+
 // IPアドレスごとの入場履歴を保存するJSONファイルのパス
 const attendanceFilePath = 'attendance.json';
 // 教室ごとの人数を保存するJSONファイルのパス
@@ -19,10 +52,7 @@ const quizFilePath = 'quiz.json';
 
 const scheduleFilePath = 'schedule.json';
 
-let attendanceData = [];
-let countsData = [];
-let quizData = [];
-let scheduleData = [];
+
 // JSONファイルからデータを読み込む関数
 function loadAttendanceData() {
     try {
@@ -82,7 +112,7 @@ app.get("/enter-main",(req,res) =>{
 	//const clientIP = splittedAddress[splittedAddress.length - 1];
 
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-  const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	console.log(clientIP)
 	const currentTime = new Date().getTime();
 	if (!attendanceData[clientIP] ) {
@@ -146,6 +176,7 @@ app.get('/enter/:class', (req, res) => {
     
 
     // JSONファイルに入場履歴を保存
+    //writeFileToGitHub(attendanceFilePath, ttendanceData)
     fs.writeFile(attendanceFilePath, JSON.stringify(attendanceData, null, 2), (err) => {
         if (err) {
             console.error('Error writing attendance file:', err);
@@ -157,6 +188,7 @@ app.get('/enter/:class', (req, res) => {
 
 		
         // JSONファイルに教室ごとの人数を保存
+        //writeFileToGitHub(countsFilePath, countsData)
         fs.writeFile(countsFilePath, JSON.stringify(countsData, null, 2), (err) => {
             if (err) {
                 console.error('Error writing counts file:', err);
@@ -189,11 +221,13 @@ function exitIfStayedTooLong() {
     }
 
     // JSONファイルに更新されたデータを保存
+    //writeFileToGitHub(attendanceFilePath, attendanceData)
     fs.writeFile(attendanceFilePath, JSON.stringify(attendanceData, null, 2), err => {
         if (err) {
             console.error('Error writing attendance file:', err);
         }
     });
+    //writeFileToGitHub(countsFilePath, countsData)
     fs.writeFile(countsFilePath, JSON.stringify(countsData, null, 2), err => {
         if (err) {
             console.error('Error writing counts file:', err);
@@ -208,7 +242,7 @@ app.post('/form_send', (req, res) => {
 
 	const splittedAddress = remoteAddress.split(':');
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-  const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
@@ -216,7 +250,12 @@ app.post('/form_send', (req, res) => {
     attendanceData[clientIP].gender = gender;
 	console.log('Age:', age);
 	console.log('Gender:', gender);
-
+    //writeFileToGitHub(attendanceFilePath, ttendanceData)
+    fs.writeFile(attendanceFilePath, JSON.stringify(attendanceData, null, 2), err => {
+        if (err) {
+            console.error('Error writing attendance file:', err);
+        }
+    });
     // レスポンスを送信
     res.send('Form data received successfully');
 });
@@ -254,17 +293,36 @@ app.get('/schedule', (req, res) => {
     res.sendFile(__dirname + '/schedule.html');
     console.log("sendschedule")
 });
+app.post('/api/delete_schedule',(req,res) => {
+    console.log(req.body)
+    const { index, loc } = req.body;
+    console.log(index)
+    console.log(loc)
+    scheduleData[loc].day.splice( index, 1 );
+    scheduleData[loc].startTime.splice( index,1 );
+    scheduleData[loc].endTime.splice( index, 1 );
+    scheduleData[loc].event.splice( index, 1 );
+    fs.writeFile(scheduleFilePath, JSON.stringify(scheduleData), (err) => {
+        if (err) {
+            console.error('Error writing schedule file:', err);
+            res.status(500).send('Error writing schedule file');
+            return;
+        }
 
+        console.log('Schedule saved successfully');
+        res.status(200).send('Schedule saved successfully');
+    });
+
+})
 app.post('/api/schedule', (req, res) => {
     const scheduleDatas = req.body;
-
-    // 既存のスケジュールデータを読み込む
-    loadscheduleData();
-
-    // 既存のスケジュールデータと新しいスケジュールデータをマージまたは上書きする
-    scheduleData = scheduleDatas;
-
+    scheduleData[scheduleDatas.loc].day.push(scheduleDatas.day);
+    scheduleData[scheduleDatas.loc].startTime.push(scheduleDatas.startTime);
+    scheduleData[scheduleDatas.loc].endTime.push(scheduleDatas.endTime)
+    scheduleData[scheduleDatas.loc].event.push(scheduleDatas.event)
+    
     // スケジュールデータをファイルに書き込む
+    //writeFileToGitHub(scheduleFilePath, scheduleData)
     fs.writeFile(scheduleFilePath, JSON.stringify(scheduleData), (err) => {
         if (err) {
             console.error('Error writing schedule file:', err);
@@ -279,7 +337,6 @@ app.post('/api/schedule', (req, res) => {
 
 // Endpoint to get schedule
 app.get('/api/schedule', (req, res) => {
-    console.log(scheduleData)
     res.json(scheduleData);
 });
 const PORT = process.env.PORT || 3000;

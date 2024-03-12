@@ -65,13 +65,13 @@
     </style>
 </head>
 <body>
-    <h1>Schedule Manager</h1>
+    <h1>スケジュール管理システム</h1>
         <form id="scheduleForm">
             <label for="loc">場所:</label>
             <select id="loc" name="loc" onchange="displaySchedule()">
-                <option value="体育館">体育館</option>
-                <option value="記念館">記念館</option>
-                <option value="蛟龍館">蛟龍館</option>
+                <option value="gym">体育館</option>
+                <option value="kinenn">記念館</option>
+                <option value="koryo">蛟龍館</option>
             </select><br>
             <label for="day">日:</label>
             <select id="day" name="day" onchange="displaySchedule()">
@@ -79,60 +79,232 @@
                 <option value="2">2日目</option>
             </select><br>
             <label for="startTime">開始時間:</label>
-            <input type="time" id="startTime" name="startTime"><br>
+            <input type="time" id="startTime" name="startTime" onblur="checkBox('startTime');checkTime('startTime')"><br>
+            <p id="msgstartTime" style="color:red;" hidden>この欄は必須です。</p><br>
             <label for="endTime">終了時間:</label>
-            <input type="time" id="endTime" name="endTime"><br>
+            <input type="time" id="endTime" name="endTime" onblur="checkBox('endTime');checkTime('endTime');"><br>
+            <p id="msgendTime" style="color:red;" hidden>この欄は必須です。</p><br>
+            <p id="errormessage" style="color:red;" hidden>終了時間は開始時間よりあとにしてください。</p><br>
             <label for="event">イベント名:</label>
-            <input type="text" id="event" name="event"><br>
-            <button type="button" onclick="saveSchedule()">Save Schedule</button>
+            <input type="text" id="event" name="event" onblur="checkBox('event')"><br>
+            <p id="msgevent" style="color:red;" hidden>この欄は必須です。</p><br>
+            <button type="button" onclick="saveSchedule()">保存</button>
         </form>
 
     <div id="scheduleList"></div>
 
-    <script>
+<script>
         // Load existing schedule from server
-        window.onload = function() {
-            displaySchedule();
+window.onload = function() {
+    displaySchedule();
+}
+
+function displaySchedule() {
+    document.getElementById("startTime").style.borderBlockColor = "black";
+    document.getElementById("msgstartTime").hidden = true
+    document.getElementById("endTime").style.borderBlockColor = "black";
+    document.getElementById("msgendTime").hidden = true
+    document.getElementById("event").style.borderBlockColor = "black";
+    document.getElementById("msgevent").hidden = true
+    fetch('/api/schedule')
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to fetch schedule data');
+        }
+    })
+    .then(scheduleData => {
+        const scheduleList = document.getElementById('scheduleList');
+        scheduleList.innerHTML = '';
+
+        const loc = document.getElementById('loc').value;
+        const day = document.getElementById('day').value;
+
+        const scheduleArray = scheduleData[loc] || {};
+        const dayIndex = [];
+        for (let i = 0; i < scheduleArray.day.length; i++) {
+            if (scheduleArray.day[i] === day) {
+                dayIndex.push(i);
+            }
         }
 
-        function displaySchedule() {
-            fetch('/api/schedule')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Failed to fetch schedule');
-                }
-            })
-            .then(schedule => {
-                const scheduleList = document.getElementById('scheduleList');
-                scheduleList.innerHTML = '';
+        if (dayIndex.length >= 1) {
+            const sortedDayIndex = sortScheduleByStartTime(dayIndex, scheduleArray);
+            displayScheduleItems(scheduleArray, sortedDayIndex, scheduleList);
+        } else {
+            const noScheduleMsg = document.createElement('p');
+            noScheduleMsg.textContent = '予定は登録されていません。';
+            scheduleList.appendChild(noScheduleMsg);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching schedule data:', error);
+        alert('Error fetching schedule data');
+    });
+}
 
-                // 空のオブジェクトの場合は空の配列に変換する
-                const scheduleArray = Array.isArray(schedule) ? schedule : [];
+function sortScheduleByStartTime(dayIndex, scheduleArray) {
+    return dayIndex.sort((a, b) => {
+        const startTimeA = scheduleArray.startTime[a];
+        const startTimeB = scheduleArray.startTime[b];
+        if (Array.isArray(startTimeA)) {
+            return startTimeA[0].localeCompare(startTimeB[0]);
+        } else {
+            return startTimeA.localeCompare(startTimeB);
+        }
+    });
+}
 
-                const loc = document.getElementById('loc').value;
-                const day = document.getElementById('day').value;
+function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
+    dayIndex.forEach(index => {
+        const startTimeArray = scheduleArray.startTime[index];
+        const endTimeArray = scheduleArray.endTime[index];
+        const eventArray = scheduleArray.event[index];
 
-                // Filter and sort schedule items
-                const filteredSchedule = scheduleArray.filter(item => item.loc === loc && item.day === day);
-                const sortedSchedule = filteredSchedule.sort((a, b) => new Date('1970/01/01 ' + a.startTime) - new Date('1970/01/01 ' + b.startTime));
+        if (Array.isArray(startTimeArray)) {
+            for (let i = 0; i < startTimeArray.length; i++) {
+                const div = document.createElement('div');
+                const li = document.createElement('li');
+                const editButton = document.createElement('span');
+                const deleteButton = document.createElement('span');
 
-                const ul = document.createElement('ul');
-                sortedSchedule.forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = `Day ${item.day}: ${item.startTime} - ${item.endTime} - ${item.event}`;
-                    ul.appendChild(li);
+                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
+                editButton.textContent = '✎';
+                deleteButton.textContent = '❌';
+
+                editButton.classList.add('edit-button');
+                deleteButton.classList.add('delete-button');
+
+                editButton.addEventListener('click', () => {
+                    // Implement editing functionality here
+                    // For example: Open a modal to edit the schedule item
+                    console.log('Edit clicked');
                 });
-                scheduleList.appendChild(ul);
-            })
-            .catch(error => {
-                console.error('Error fetching schedule:', error);
-                alert('Error fetching schedule');
-            });
-        }
 
-        function saveSchedule() {
+                deleteButton.addEventListener('click', () => {
+                    // Implement deletion functionality here
+                    // For example: Remove the schedule item from the list
+                    div.remove(); // Remove the entire div containing the schedule item
+                    console.log('Delete clicked');
+                });
+
+                div.appendChild(li);
+                div.appendChild(editButton);
+                div.appendChild(deleteButton);
+                scheduleList.appendChild(div);
+            }
+        } else {
+            const div = document.createElement('div');
+            const li = document.createElement('li');
+            const editButton = document.createElement('span');
+            const deleteButton = document.createElement('span');
+
+            li.textContent = `${startTimeArray} - ${endTimeArray}  :  ${eventArray}`;
+            editButton.textContent = '✎';
+            deleteButton.textContent = '❌';
+
+            editButton.classList.add('edit-button');
+            deleteButton.classList.add('delete-button');
+            const loc = document.getElementById('loc').value;
+            editButton.addEventListener('click', () => {
+                document.getElementById('startTime').value = scheduleArray.startTime[index];;
+                document.getElementById('endTime').value = scheduleArray.endTime[index];;
+                document.getElementById('event').value = scheduleArray.event[index];;
+                fetch('/api/delete_schedule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({index,loc})
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Schedule delete successfully');
+                            displaySchedule();
+                        } else {
+                            console.error('Failed to delete schedule:', response.statusText);
+                            alert('Failed to delete schedule');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting schedule:', error);
+                        alert('Error deleting schedule');
+                    });
+
+                console.log('Edit clicked');
+            });
+
+            deleteButton.addEventListener('click', () => {
+                // Implement deletion functionality here
+                // For example: Remove the schedule item from the list
+                console.log(index)
+                var res = confirm("削除してよろしいですか？");
+                if (res == true){
+                    fetch('/api/delete_schedule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({index,loc})
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Schedule delete successfully');
+                            displaySchedule();
+                        } else {
+                            console.error('Failed to delete schedule:', response.statusText);
+                            alert('Failed to delete schedule');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting schedule:', error);
+                        alert('Error deleting schedule');
+                    });
+                    div.remove(); // Remove the entire div containing the schedule item
+                    console.log('Delete clicked');
+                }
+            });
+
+            div.appendChild(li);
+            div.appendChild(editButton);
+            div.appendChild(deleteButton);
+            scheduleList.appendChild(div);
+        }
+    });
+}
+
+function checkTime(element){
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    if (startTime && endTime){
+        if (endTime <= startTime){
+            document.getElementById("startTime").style.borderBlockColor = "red";
+            document.getElementById("endTime").style.borderBlockColor = "red";
+            document.getElementById("errormessage").hidden = false
+        }
+        else{
+            document.getElementById("startTime").style.borderBlockColor = "black";
+            document.getElementById("endTime").style.borderBlockColor = "black";
+            document.getElementById("errormessage").hidden = true
+        }
+    }
+    else{
+        checkBox(element)
+    }
+}
+
+function checkBox(element){
+    if (document.getElementById(element).value == ""){
+        document.getElementById(element).style.borderBlockColor = "red";
+        document.getElementById(`msg${element}`).hidden = false
+    }else{
+        document.getElementById(element).style.borderBlockColor = "black";
+        document.getElementById(`msg${element}`).hidden = true
+    }
+}
+
+function saveSchedule() {
             const loc = document.getElementById('loc').value;
             const day = document.getElementById('day').value;
             const startTime = document.getElementById('startTime').value;
@@ -174,13 +346,21 @@
                     alert('Error saving schedule');
                 });
             } else {
-                if (!startTime || !endTime || !event) {
-                    alert('Please fill in all fields.');
-                } else {
-                    alert('End time must be after start time.');
+                if (!startTime){
+                    document.getElementById("startTime").style.borderBlockColor = "red";
+                    document.getElementById("msgstartTime").hidden = false
+                }
+                if (!endTime){
+                    document.getElementById("endTime").style.borderBlockColor = "red";
+                    document.getElementById("msgendTime").hidden = false
+                }
+                if (!event){
+                    document.getElementById("event").style.borderBlockColor = "red";
+                    document.getElementById("msgevent").hidden = false
                 }
             }
         }
-    </script>
+        
+</script>
 </body>
 </html>
