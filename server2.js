@@ -358,8 +358,11 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
           if (currentTime >= startTime && currentTime <= endTime) {
             return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
           }
+          else{
+            return null; 
+          }
         }
-        return null; // 現在行われているイベントがない場合は null を返す
+        // 現在行われているイベントがない場合は null を返す
       }
       
       // 現在行われているイベントを取得
