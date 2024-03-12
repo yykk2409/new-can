@@ -339,6 +339,33 @@ app.post('/api/schedule', (req, res) => {
 app.get('/api/schedule', (req, res) => {
     res.json(scheduleData);
 });
+
+app.get('/current-schedule-time/:loc',(req,res) =>{
+    loc = req.params.loc
+    
+    scheduleDatas = scheduleData[loc]
+    function getCurrentEvent(scheduleDatas) {
+        // 現在の時刻を取得
+        const now = new Date();
+        const currentTime = now.getHours() * 100 + now.getMinutes(); // 時間を 24 時間形式に変換
+      
+        // スケジュールデータから現在行われているイベントを検索
+        for (let i = 0; i < scheduleDatas.day.length; i++) {
+          const startTime = parseInt(scheduleDatas.startTime[i].replace(':', ''), 10);
+          const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
+      
+          // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
+          if (currentTime >= startTime && currentTime <= endTime) {
+            return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
+          }
+        }
+        return null; // 現在行われているイベントがない場合は null を返す
+      }
+      
+      // 現在行われているイベントを取得
+      const currentEvent = getCurrentEvent(scheduleDatas);
+      res.send(time)
+})
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
