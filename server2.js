@@ -364,7 +364,7 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
       
       // 現在行われているイベントを取得
       const currentEvent = getCurrentEvent(scheduleDatas);
-      res.send(time)
+      res.send(currentEvent)
 })
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
