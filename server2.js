@@ -267,6 +267,7 @@ app.get('/count/:class', (req, res) => {
     res.json({count});
 });
 app.get('/attendancedata.json', (req, res) => {
+    console.log(attendanceData)
     res.json({attendanceData});
 });
 app.get('/scheduledata.json', (req, res) => {
