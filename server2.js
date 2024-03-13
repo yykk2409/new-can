@@ -349,7 +349,8 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
         const now = new Date();
         const japanTime = new Date(now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }));
         const currentTime = japanTime.getHours() * 100 + japanTime.getMinutes(); // 時間を 24 時間形式に変換
-        
+        const today = japanTime.getDate()-12
+        console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
         for (let i = 0; i < scheduleDatas.day.length; i++) {
@@ -357,10 +358,45 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
           const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
           console.log
           // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
-          if (currentTime >= startTime && currentTime <= endTime) {
-            return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
+          if (scheduleDatas.day[i] == today.toString()){
+            if (currentTime >= startTime && currentTime <= endTime) {
+                return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
+            }
           }
-            
+        }
+        // 現在行われているイベントがない場合は null を返す
+        return null; 
+      }
+      
+      // 現在行われているイベントを取得
+      const currentEvent = getCurrentEvent(scheduleDatas);
+      console.log(currentEvent)
+      res.send(currentEvent)
+})
+app.get('/current-schedule-event/:loc',(req,res) =>{
+    loc = req.params.loc
+    
+    scheduleDatas = scheduleData[loc]
+    function getCurrentEvent(scheduleDatas) {
+        // 現在の時刻を取得
+        const now = new Date();
+        const japanTime = new Date(now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }));
+        const currentTime = japanTime.getHours() * 100 + japanTime.getMinutes(); // 時間を 24 時間形式に変換
+        const today = japanTime.getDate()-12
+        console.log(today);
+        console.log(currentTime)
+        // スケジュールデータから現在行われているイベントを検索
+        for (let i = 0; i < scheduleDatas.day.length; i++) {
+          const startTime = parseInt(scheduleDatas.startTime[i].replace(':', ''), 10);
+          const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
+          const event = scheduleDatas.event[i];
+          console.log
+          // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
+          if (scheduleDatas.day[i] == today.toString()){
+            if (currentTime >= startTime && currentTime <= endTime) {
+                return event
+            }
+          }
         }
         // 現在行われているイベントがない場合は null を返す
         return null; 
