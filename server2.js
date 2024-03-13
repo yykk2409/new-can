@@ -346,8 +346,10 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
     scheduleDatas = scheduleData[loc]
     function getCurrentEvent(scheduleDatas) {
         // 現在の時刻を取得
-        const now = new Date().toLocaleString("ja-JP", {timeZone: "Asia/Tokyo"});
-        const currentTime = now.getHours() * 100 + now.getMinutes(); // 時間を 24 時間形式に変換
+        const now = new Date();
+        const japanTime = new Date(now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }));
+        const currentTime = japanTime.getHours() * 100 + japanTime.getMinutes(); // 時間を 24 時間形式に変換
+        
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
         for (let i = 0; i < scheduleDatas.day.length; i++) {
