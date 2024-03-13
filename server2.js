@@ -348,12 +348,11 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
         // 現在の時刻を取得
         const now = new Date();
         const currentTime = now.getHours() * 100 + now.getMinutes(); // 時間を 24 時間形式に変換
-      
+        console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
         for (let i = 0; i < scheduleDatas.day.length; i++) {
           const startTime = parseInt(scheduleDatas.startTime[i].replace(':', ''), 10);
           const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
-      
           // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
           if (currentTime >= startTime && currentTime <= endTime) {
             return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
