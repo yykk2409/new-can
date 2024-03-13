@@ -1,0 +1,32 @@
+<h1 id="gym-time"></h1>
+<style>
+h1 {
+  font-size: 20px;
+  margin: auto 0;
+  text-align: left;
+}
+</style>
+
+<script>
+
+var time = document.getElementById("gym-time")
+fetch("https://new-can.onrender.com/current-schedule-time/gym")
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.text(); // テキスト形式でレスポンスを取得
+})
+.then(data => {
+  console.log('Success:', data);
+// レスポンスに基づいて適切な処理を実行する
+  alert(data)
+  time.innerHTML = data
+
+})
+.catch(error => {
+  console.error('Error:', error);
+  alert("error")
+// エラー処理を追加
+});
+</script>

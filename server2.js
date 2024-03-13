@@ -355,15 +355,15 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
         for (let i = 0; i < scheduleDatas.day.length; i++) {
           const startTime = parseInt(scheduleDatas.startTime[i].replace(':', ''), 10);
           const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
+          console.log
           // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
           if (currentTime >= startTime && currentTime <= endTime) {
             return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
           }
-          else{
-            return null; 
-          }
+            
         }
         // 現在行われているイベントがない場合は null を返す
+        return null; 
       }
       
       // 現在行われているイベントを取得
