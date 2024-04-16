@@ -45,12 +45,8 @@ const classFilePath = 'class.json';
 async function loadDataFromPostgreSQL(table, callback) {
     const client = await pool.connect();
     try {
-        const result = await client.query(`SELECT * FROM ${table}`);
-        if (result.rows.length > 0) {
-            callback(JSON.parse(result.rows[0].data));
-        } else {
-            callback({});
-        }
+        // idが1のデータを取得するためのSQLクエリ
+        const data = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
     } finally {
@@ -58,11 +54,12 @@ async function loadDataFromPostgreSQL(table, callback) {
     }
 }
 
+
 // PostgreSQLにデータを保存する関数
 async function saveDataToPostgreSQL(table, data) {
     const client = await pool.connect();
     try {
-        await client.query(`UPDATE ${table} SET data = $1`, [JSON.stringify(data)]);
+        await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data),1]);
     } catch (err) {
         console.error(`Error writing ${table} data to PostgreSQL:`, err);
     } finally {
