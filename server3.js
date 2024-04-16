@@ -46,13 +46,20 @@ async function loadDataFromPostgreSQL(table, callback) {
     const client = await pool.connect();
     try {
         // idが1のデータを取得するためのSQLクエリ
-        const data = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
+        const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
+        
+        if (result.rows.length > 0) {
+            callback(JSON.parse(result.rows[0].data));
+        } else {
+            callback({});
+        }
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
     } finally {
         client.release();
     }
 }
+
 
 
 // PostgreSQLにデータを保存する関数
