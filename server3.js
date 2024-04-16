@@ -1,16 +1,19 @@
+const dotenv = require("dotenv");
 const express = require('express');
 const fs = require('fs');
 const { Octokit } = require("@octokit/rest");
 const { Pool } = require('pg');
 
+dotenv.config();
+
 const app = express();
 
 // PostgreSQLの接続情報
 const pool = new Pool({
-  user: 'new_can_s637_user',
-  host: 'dpg-coegvpq0si5c739h9uqg-a',
-  database: 'new_can_s637',
-  password: 'krHpv2Li700xH3DmGRsur2D71KLC6YK1',
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB,
+  password: process.env.DB_PASSWORD,
   port: 5432, // PostgreSQLのデフォルトポート
 });
 
