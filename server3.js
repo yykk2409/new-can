@@ -66,17 +66,23 @@ async function saveDataToPostgreSQL(table, data) {
         client.release();
     }
 }
-
+function loadclassData() {
+    try {
+        const data = fs.readFileSync(classFilePath);
+        classData = JSON.parse(data);
+    } catch (err) {
+        console.error('Error reading counts file:', err);
+    }
+}
 let attendanceData = {};
 let countsData = {};
-let classData = {};
+loadclassData();
 let quizData = {};
 let scheduleData = {};
 
 function loadAllData() {
     loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data });
     loadDataFromPostgreSQL('counts_data', (data) => { countsData = data });
-    loadDataFromPostgreSQL('class_data', (data) => { classData = data });
     loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data });
     loadDataFromPostgreSQL('schedule_data', (data) => { scheduleData = data });
 }
