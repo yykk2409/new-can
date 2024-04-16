@@ -34,10 +34,10 @@ const repo = 'new-can';
 
 const attendanceFilePath = 'attendance.json';
 const countsFilePath = 'counts.json';
-const classFilePath = 'class.json';
+
 const quizFilePath = 'quiz.json';
 const scheduleFilePath = 'schedule.json';*/
-
+const classFilePath = 'class.json';
 // PostgreSQLからデータを読み込む関数
 async function loadDataFromPostgreSQL(table, callback) {
     const client = await pool.connect();
