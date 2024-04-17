@@ -42,6 +42,7 @@ const quizFilePath = 'quiz.json';
 const scheduleFilePath = 'schedule.json';*/
 const classFilePath = 'class.json';
 // PostgreSQLからデータを読み込む関数
+// PostgreSQLからデータを読み込む関数
 async function loadDataFromPostgreSQL(table, callback) {
     const client = await pool.connect();
     try {
@@ -49,9 +50,11 @@ async function loadDataFromPostgreSQL(table, callback) {
         const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
         
         if (result.rows.length > 0) {
-            callback(JSON.parse(result.rows[0].data));
+            // 取得したデータを文字列としてコールバック関数に渡す
+            callback(result.rows[0].data); 
         } else {
-            callback({});
+            // データが存在しない場合は空のJSON文字列をコールバック関数に渡す
+            callback("{}"); 
         }
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
@@ -59,6 +62,7 @@ async function loadDataFromPostgreSQL(table, callback) {
         client.release();
     }
 }
+
 
 
 
