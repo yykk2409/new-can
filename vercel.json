@@ -11,5 +11,10 @@
            "src": "/(.*)",
            "dest": "server3.js"
        }
-   ]
+   ],
+   "functions": {
+    "server3.js": {
+      "includeFiles": "templates/**"
+    }
+  }
 }
