@@ -10,10 +10,11 @@ const app = express();
 
 // PostgreSQLの接続情報
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB,
-  password: process.env.DB_PASSWORD,
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.OSTGRES_DATABASE,
+  password: process.env.POSTGRES_PASSWORD
+,
   port: 5432, // PostgreSQLのデフォルトポート
 });
 
