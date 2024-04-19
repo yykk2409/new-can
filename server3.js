@@ -44,7 +44,7 @@ const countsFilePath = 'counts.json';
 
 const quizFilePath = 'quiz.json';
 const scheduleFilePath = 'schedule.json';*/
-const classFilePath = 'class.json';
+const classFilePath = 'templates/class.json';
 // PostgreSQLからデータを読み込む関数
 // PostgreSQLからデータを読み込む関数
 async function loadDataFromPostgreSQL(table, callback) {
