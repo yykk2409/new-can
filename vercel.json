@@ -3,9 +3,9 @@
    "builds": [
        {
            "src": "./server3.js",
-           "use": "@vercel/node"
-           "config":{
-              "includeFiles":[
+           "use": "@vercel/node",
+           "config": {
+              "includeFiles": [
                  "templates/**"
               ]
            }
