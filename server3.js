@@ -13,9 +13,12 @@ const pool = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_HOST,
   database: process.env.OSTGRES_DATABASE,
-  password: process.env.POSTGRES_PASSWORD
-,
+  password: process.env.POSTGRES_PASSWORD,
   port: 5432, // PostgreSQLのデフォルトポート
+　ssl: {
+    rejectUnauthorized: false,
+    sslmode: 'require'
+  }
 });
 
 app.use((req, res, next) => {
