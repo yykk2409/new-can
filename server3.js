@@ -1,8 +1,8 @@
-const dotenv = require("dotenv");
-const express = require('express');
-const fs = require('fs');
-const { Octokit } = require("@octokit/rest");
-const { Pool } = require('pg');
+import dotenv = "dotenv";
+import express = 'express';
+import fs = 'fs';
+import { Octokit } = "@octokit/rest";
+import { Pool } = 'pg';
 
 dotenv.config();
 
