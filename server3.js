@@ -47,8 +47,8 @@ const scheduleFilePath = 'schedule.json';*/
 const classFilePath = 'templates/class.json';
 // PostgreSQLからデータを読み込む関数
 // PostgreSQLからデータを読み込む関数
+const client = await pool.connect();
 async function loadDataFromPostgreSQL(table, callback) {
-    const client = await pool.connect();
     try {
         // idが1のデータを取得するためのSQLクエリ
         const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
@@ -72,7 +72,6 @@ async function loadDataFromPostgreSQL(table, callback) {
 
 // PostgreSQLにデータを保存する関数
 async function saveDataToPostgreSQL(table, data) {
-    const client = await pool.connect();
     try {
         await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data),1]);
     } catch (err) {
