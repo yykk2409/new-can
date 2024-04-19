@@ -3,8 +3,8 @@ import express from 'express';
 import fs from 'fs';
 import { Octokit } from "@octokit/rest";
 import pg from 'pg';
-const { Pool } = pg
-dotenv.config();
+import pkg from 'pg';
+const { Pool } = pkg;
 
 const app = express();
 
