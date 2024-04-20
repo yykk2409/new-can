@@ -142,7 +142,7 @@ app.get('/enter/:class', async (req, res) => {
         attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
     }
 	 if (attendanceData[clientIP].age == 'NaN'|| attendanceData[clientIP].gender == 'NaN'){
-		  res.sendFile(__dirname + '/form.html');
+		  res.sendFile(process.cwd() + '/form.html');
 		  console.log("sendfile")
 		  return
 	 }
@@ -254,7 +254,7 @@ app.post('/quiz/:number', (req, res) => {
 });
 
 app.get('/schedule', async (req, res) => {
-    res.sendFile(__dirname + '/schedule.html');
+    res.sendFile(process.cwd() + '/schedule.html');
     console.log("sendschedule")
 });
 app.post('/api/delete_schedule',async (req,res) => {
