@@ -7,7 +7,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 const app = express();
-
+dotenv.config();
 // PostgreSQLの接続情報
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
