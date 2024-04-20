@@ -114,7 +114,7 @@ app.get("/enter-main",(req,res) =>{
 		attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
 	}
 	if (attendanceData[clientIP].age == 'NaN'|| attendanceData[clientIP].gender == 'NaN'){
-		res.sendFile(__dirname + '/form.html');
+		res.sendFile(process.cwd() + '/form.html');
 		console.log("sendfile")
 		return
 	}
