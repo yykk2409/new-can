@@ -47,33 +47,30 @@ const scheduleFilePath = 'schedule.json';*/
 const classFilePath = 'templates/class.json';
 // PostgreSQLからデータを読み込む関数
 // PostgreSQLからデータを読み込む関数
-const client = await pool.connect();
+
+// PostgreSQLからデータを読み込む関数
 async function loadDataFromPostgreSQL(table, callback) {
     try {
-        // idが1のデータを取得するためのSQLクエリ
-        const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
+        const result = await pool.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
         
         if (result.rows.length > 0) {
-            // 取得したデータを文字列としてコールバック関数に渡す
             callback(result.rows[0].data); 
         } else {
-            // データが存在しない場合は空のJSON文字列をコールバック関数に渡す
             callback("{}"); 
         }
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
-    } finally {
-        client.release();
     }
 }
 
 
 
-
+// PostgreSQLにデータを保存する関数
 // PostgreSQLにデータを保存する関数
 async function saveDataToPostgreSQL(table, data) {
+    const client = await pool.connect();
     try {
-        await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data),1]);
+        await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data), 1]);
     } catch (err) {
         console.error(`Error writing ${table} data to PostgreSQL:`, err);
     } finally {
