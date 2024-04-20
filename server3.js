@@ -87,10 +87,10 @@ function loadclassData() {
 }
 let attendanceData = {};
 let countsData = {};
-loadclassData();
 let quizData = {};
 let scheduleData = {};
-
+let classData = {}
+loadclassData();
 function loadAllData() {
     loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data });
     loadDataFromPostgreSQL('counts_data', (data) => { countsData = data });
@@ -107,7 +107,7 @@ app.get("/enter-main",(req,res) =>{
 	//const clientIP = splittedAddress[splittedAddress.length - 1];
 
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    	const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	console.log(clientIP)
 	const currentTime = new Date().getTime();
 	if (!attendanceData[clientIP] ) {
