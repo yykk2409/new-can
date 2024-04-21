@@ -52,7 +52,7 @@ const client = await pool.connect();
 // PostgreSQLからデータを読み込む関数
 async function loadDataFromPostgreSQL(table, callback) {
     try {
-        const result = await pool.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
+        const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
         
         if (result.rows.length > 0) {
             callback(result.rows[0].data); 
