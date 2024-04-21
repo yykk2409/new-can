@@ -58,9 +58,7 @@ async function loadDataFromPostgreSQL(table, callback) {
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
         throw err; // エラーを投げる
-    } finally {
-        client.release();
-    }
+    } 
 }
 
 async function saveDataToPostgreSQL(table, data) { 
@@ -69,9 +67,7 @@ async function saveDataToPostgreSQL(table, data) {
     } catch (err) {
         console.error(`Error writing ${table} data to PostgreSQL:`, err);
         throw err; // エラーを投げる
-    } finally {
-        client.release();
-    }
+    } 
 }
 
 function loadclassData() {
