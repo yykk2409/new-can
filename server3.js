@@ -46,9 +46,8 @@ const countsFilePath = 'counts.json';
 const quizFilePath = 'quiz.json';
 const scheduleFilePath = 'schedule.json';*/
 const classFilePath = 'templates/class.json';
-
+const client = await pool.connect();
 async function loadDataFromPostgreSQL(table, callback) {
-    const client = await pool.connect();
     try {
         const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
         if (result.rows.length > 0) {
@@ -64,8 +63,7 @@ async function loadDataFromPostgreSQL(table, callback) {
     }
 }
 
-async function saveDataToPostgreSQL(table, data) {
-    const client = await pool.connect(); 
+async function saveDataToPostgreSQL(table, data) { 
     try {
         await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data), 1]);
     } catch (err) {
