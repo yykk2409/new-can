@@ -46,14 +46,11 @@ const countsFilePath = 'counts.json';
 const quizFilePath = 'quiz.json';
 const scheduleFilePath = 'schedule.json';*/
 const classFilePath = 'templates/class.json';
-// PostgreSQLからデータを読み込む関数
-// PostgreSQLからデータを読み込む関数
-const client = await pool.connect();
-// PostgreSQLからデータを読み込む関数
+
 async function loadDataFromPostgreSQL(table, callback) {
+    const client = await pool.connect();
     try {
         const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
-        
         if (result.rows.length > 0) {
             callback(result.rows[0].data); 
         } else {
@@ -61,12 +58,11 @@ async function loadDataFromPostgreSQL(table, callback) {
         }
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
+    } finally {
+        client.release();
     }
 }
 
-
-
-// PostgreSQLにデータを保存する関数
 // PostgreSQLにデータを保存する関数
 async function saveDataToPostgreSQL(table, data) {
     try {
@@ -91,11 +87,13 @@ let quizData = {};
 let scheduleData = {};
 let classData = {}
 loadclassData();
-function loadAllData() {
-    loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data });
-    loadDataFromPostgreSQL('counts_data', (data) => { countsData = data });
-    loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data });
-    loadDataFromPostgreSQL('schedule_data', (data) => { scheduleData = data });
+async function loadAllData() {
+    await Promise.all([
+        loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data }),
+        loadDataFromPostgreSQL('counts_data', (data) => { countsData = data }),
+        loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data }),
+        loadDataFromPostgreSQL('schedule_data', (data) => { scheduleData = data })
+    ]);
 }
 
 loadAllData();
