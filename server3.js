@@ -58,22 +58,24 @@ async function loadDataFromPostgreSQL(table, callback) {
         }
     } catch (err) {
         console.error(`Error reading ${table} data from PostgreSQL:`, err);
+        throw err; // エラーを投げる
     } finally {
         client.release();
     }
 }
 
-// PostgreSQLにデータを保存する関数
 async function saveDataToPostgreSQL(table, data) {
     const client = await pool.connect(); 
     try {
         await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data), 1]);
     } catch (err) {
         console.error(`Error writing ${table} data to PostgreSQL:`, err);
+        throw err; // エラーを投げる
     } finally {
         client.release();
     }
 }
+
 function loadclassData() {
     try {
         const data = fs.readFileSync(classFilePath);
@@ -89,13 +91,19 @@ let scheduleData = {};
 let classData = {}
 loadclassData();
 async function loadAllData() {
-    await Promise.all([
-        loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data }),
-        loadDataFromPostgreSQL('counts_data', (data) => { countsData = data }),
-        loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data }),
-        loadDataFromPostgreSQL('schedule_data', (data) => { scheduleData = data })
-    ]);
+    try {
+        await Promise.all([
+            loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data }),
+            loadDataFromPostgreSQL('counts_data', (data) => { countsData = data }),
+            loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data }),
+            loadDataFromPostgreSQL('schedule_data', (data) => { scheduleData = data })
+        ]);
+    } catch (err) {
+        console.error("Error loading data from PostgreSQL:", err);
+        // 何らかのリカバリー処理や、エラーメッセージをクライアントに送信する処理を追加することができます。
+    }
 }
+
 
 loadAllData();
 
