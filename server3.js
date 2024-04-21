@@ -65,6 +65,7 @@ async function loadDataFromPostgreSQL(table, callback) {
 
 // PostgreSQLにデータを保存する関数
 async function saveDataToPostgreSQL(table, data) {
+    const client = await pool.connect(); 
     try {
         await client.query(`UPDATE ${table} SET data = $1 WHERE id = $2`, [JSON.stringify(data), 1]);
     } catch (err) {
