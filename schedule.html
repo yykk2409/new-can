@@ -14,6 +14,10 @@
         h1 {
             text-align: center;
         }
+        #whole{
+            display:flex
+            
+        }
         #scheduleForm {
             width: 300px;
             margin: 20px auto;
@@ -65,6 +69,7 @@
     </style>
 </head>
 <body>
+    <div id="whole">
     <h1>スケジュール管理システム</h1>
         <form id="scheduleForm">
             <label for="loc">場所:</label>
@@ -92,7 +97,7 @@
         </form>
 
     <div id="scheduleList"></div>
-
+    </div>
 <script>
         // Load existing schedule from server
 window.onload = function() {
