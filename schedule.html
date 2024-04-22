@@ -140,7 +140,7 @@ function displaySchedule() {
     })
     .catch(error => {
         console.error('Error fetching schedule data:', error);
-        alert('スケジュールの取得に失敗しました。数分後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+        alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
     });
 }
 
@@ -224,12 +224,12 @@ function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
                             displaySchedule();
                         } else {
                             console.error('Failed to delete schedule:', response.statusText);
-                            alert('スケジュールの編集に失敗しました。数分後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                            alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                         }
                     })
                     .catch(error => {
                         console.error('Error deleting schedule:', error);
-                        alert('スケジュールの編集に失敗しました。数分後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                        alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                     });
 
                 console.log('Edit clicked');
@@ -254,7 +254,7 @@ function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
                             displaySchedule();
                         } else {
                             console.error('Failed to delete schedule:', response.statusText);
-                            alert('スケジュールの削除に失敗しました。数分後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                            alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                         }
                     })
                     .catch(error => {
@@ -338,12 +338,12 @@ function saveSchedule() {
                         //alert('Schedule saved successfully!');
                     } else {
                         console.error('Failed to save schedule:', response.statusText);
-                        alert('スケジュールの保存に失敗しました。数分後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                        alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                     }
                 })
                 .catch(error => {
                     console.error('Error saving schedule:', error);
-                    alert('スケジュールの保存に失敗しました。数分後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                    alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                 });
             } else {
                 if (!startTime){
