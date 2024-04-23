@@ -78,10 +78,10 @@ function loadclassData() {
         console.error('Error reading counts file:', err);
     }
 }
-let attendanceData = {};
-let countsData = {};
+let attendanceData = {status:false};
+let countsData = {satatus:false};
 let quizData = {};
-let scheduleData = {};
+let scheduleData = {satatus:false};
 let classData = {}
 loadclassData();
 async function loadAllData() {
