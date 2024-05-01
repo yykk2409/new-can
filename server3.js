@@ -330,7 +330,7 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
 app.get('/current-schedule-event/:loc',(req,res) =>{
     let loc = req.params.loc
     
-    scheduleDatas = scheduleData[loc]
+    let scheduleDatas = scheduleData[loc]
     function getCurrentEvent(scheduleDatas) {
         // 現在の時刻を取得
         const now = new Date();
