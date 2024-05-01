@@ -328,7 +328,7 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
       res.send(currentEvent)
 })
 app.get('/current-schedule-event/:loc',(req,res) =>{
-    loc = req.params.loc
+    let loc = req.params.loc
     
     scheduleDatas = scheduleData[loc]
     function getCurrentEvent(scheduleDatas) {
