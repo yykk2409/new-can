@@ -3,23 +3,14 @@ import express from 'express';
 import fs from 'fs';
 import { Octokit } from "@octokit/rest";
 import pg from 'pg';
-import pkg from 'pg';
-const { Pool } = pkg;
+const { Pool } = pg;
 import path from 'path';
 
 const app = express();
 dotenv.config();
 // PostgreSQLの接続情報
 const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DATABASE,
-  password: process.env.POSTGRES_PASSWORD,
-  port: 5432, // PostgreSQLのデフォルトポート
-　ssl: {
-    rejectUnauthorized: false,
-    sslmode: 'require'
-  }
+    connectionString: process.env.POSTGRES_URL + "?sslmode=require",
 });
 
 app.use((req, res, next) => {
