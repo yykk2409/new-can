@@ -80,7 +80,7 @@ async function loadAllData() {
         await Promise.all([
             loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data }),
             loadDataFromPostgreSQL('counts_data', (data) => { countsData = data }),
-            loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data }),
+            //loadDataFromPostgreSQL('quiz_data', (data) => { quizData = data }),
             loadDataFromPostgreSQL('schedule_data', (data) => { scheduleData = data })
         ]);
     } catch (err) {
