@@ -327,7 +327,7 @@ app.get('/current-schedule-event/:loc',(req,res) =>{
         const now = new Date();
         const japanTime = new Date(now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }));
         const currentTime = japanTime.getHours() * 100 + japanTime.getMinutes(); // 時間を 24 時間形式に変換
-        const today = japanTime.getDate()-12
+        const today = japanTime.getDate()-3
         console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
