@@ -39,18 +39,20 @@
 </style>
 <script>
 function statusCheck(){
-fetch("/statusCheck").then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('Failed to fetch schedule data');
-        }
-    })
-    .then(data => {
-        if (data == "True"){
-            window.location.reload()
-        }
-    })
+    fetch("/statusCheck").then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to fetch schedule data');
+            }
+        })
+        .then(data => {
+            console.log(data)
+            if (data === true){
+                window.location.reload();
+            }
+        });
 }
-setInterval(statusCheck();,1000)
+
+setInterval(statusCheck, 1000);
 </script>
