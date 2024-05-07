@@ -24,18 +24,6 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-/*const octokit = new Octokit({
-    auth: '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',
-});
-
-const owner = 'yykk2409';
-const repo = 'new-can';
-
-const attendanceFilePath = 'attendance.json';
-const countsFilePath = 'counts.json';
-
-const quizFilePath = 'quiz.json';
-const scheduleFilePath = 'schedule.json';*/
 const classFilePath = 'templates/class.json';
 const client = await pool.connect();
 async function loadDataFromPostgreSQL(table, callback) {
@@ -69,10 +57,10 @@ function loadclassData() {
         console.error('Error reading counts file:', err);
     }
 }
-let attendanceData = {status:false};
-let countsData = {satatus:false};
+let attendanceData = {"status":"false"};
+let countsData = {"status":"false"};
 let quizData = {};
-let scheduleData = {satatus:false};
+let scheduleData = {"status":"false"};
 let classData = {}
 loadclassData();
 async function loadAllData() {
@@ -102,34 +90,38 @@ app.get("/enter-main",(req,res) =>{
     	const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	console.log(clientIP)
 	const currentTime = new Date().getTime();
-	if (!attendanceData[clientIP] ) {
-		attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
+	if (attendanceData["status"] == "True"){
+		if (!attendanceData[clientIP] ) {
+			attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
+		}
+		if (attendanceData[clientIP].age == 'NaN'|| attendanceData[clientIP].gender == 'NaN'){
+			res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
+			console.log("sendfile")
+			return
+		}
+		if (attendanceData[clientIP].main == "n"){
+			countsData["main"] = (countsData["main"] || 0) + 1;
+			attendanceData[clientIP].main = "y"
+		}
+		res.redirect("https://koryo-fes.studio.site");
+	}else{
+		res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
 	}
-	if (attendanceData[clientIP].age == 'NaN'|| attendanceData[clientIP].gender == 'NaN'){
-		res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
-		console.log("sendfile")
-		return
-	}
-	if (attendanceData[clientIP].main == "n"){
-		countsData["main"] = (countsData["main"] || 0) + 1;
-		attendanceData[clientIP].main = "y"
-	}
-	res.redirect("https://koryo-fes.studio.site");
 });
 
 // 入場処理
 app.get('/enter/:class', async (req, res) => {
-	const classroom = classData[req.params.class];
-	const remoteAddress = req.connection.remoteAddress;
-
-	const splittedAddress = remoteAddress.split(':');
-	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
+    const classroom = classData[req.params.class];
+    const remoteAddress = req.connection.remoteAddress;
+    const splittedAddress = remoteAddress.split(':');
+    const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	//const clientIP = splittedAddress[splittedAddress.length - 1];
-	console.log(clientIP)
+    console.log(clientIP)
 
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
+    if (attendanceData["status"] == "True"){
     if (!attendanceData[clientIP] ) {
         attendanceData[clientIP] = {age:'NaN',gender:'NaN',main:"n", classrooms: [], timestamp: currentTime };
     }
@@ -159,6 +151,9 @@ app.get('/enter/:class', async (req, res) => {
 		 countsData[classroom] = (countsData[classroom] || 0) + 1;
 		 console.log("各クラスの在中人数は"+JSON.stringify(countsData))
 	 }
+    }else{
+	    res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+    }
     // 新しい教室を追加
     
 
