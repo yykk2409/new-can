@@ -41,7 +41,7 @@
 function statusCheck(){
     fetch("/statusCheck").then(response => {
             if (response.ok) {
-                return response.json();
+                return response.text();
             } else {
                 throw new Error('Failed to fetch schedule data');
             }
