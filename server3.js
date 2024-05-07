@@ -226,6 +226,9 @@ app.get('/countsdata.json', (req, res) => {
 app.get('/scheduledata.json', (req, res) => {
     res.json({scheduleData});
 });
+app.get('/statusCheck', (req, res) => {
+    res.send(attendanceData["status"]);
+});
 app.post('/quiz/:number', (req, res) => {
     const number = req.params.number;
     const answer = req.body.answer;
