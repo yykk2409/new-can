@@ -118,11 +118,11 @@ function displaySchedule() {
     document.getElementById("event").style.borderBlockColor = "black";
     document.getElementById("msgevent").hidden = true
     if (document.getElementById('loc').value == "その他"){
-        document.getElementById("other_loc").hidden = false
-        document.getElementById("other_loc_label").hidden = false
+        document.getElementById("other_loc").hidden = false;
+        document.getElementById("other_loc_label").hidden = false;
     }else{
-        document.getElementById("other_loc").hidden = true
-        document.getElementById("other_loc_label").hidden = false
+        document.getElementById("other_loc").hidden = true;
+        document.getElementById("other_loc_label").hidden = true;
     }
     fetch('/api/schedule')
     .then(response => {
