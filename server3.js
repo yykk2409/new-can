@@ -327,7 +327,7 @@ app.get('/current-schedule-event/:loc',(req,res) =>{
         const now = new Date();
         const japanTime = new Date(now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }));
         const currentTime = japanTime.getHours() * 100 + japanTime.getMinutes(); // 時間を 24 時間形式に変換
-        const today = japanTime.getDate()-3
+        const today = -japanTime.getDate()%2+2
         console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
@@ -335,7 +335,6 @@ app.get('/current-schedule-event/:loc',(req,res) =>{
           const startTime = parseInt(scheduleDatas["startTime"][i].replace(':', ''), 10);
           const endTime = parseInt(scheduleDatas["endTime"][i].replace(':', ''), 10);
           const event = scheduleDatas["event"][i];
-          console.log
           // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
           if (scheduleDatas["day"][i] == today.toString()){
             if (currentTime >= startTime && currentTime <= endTime) {
