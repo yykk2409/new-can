@@ -77,12 +77,15 @@
                 <option value="gym">体育館</option>
                 <option value="kinenn">記念館</option>
                 <option value="koryo">蛟龍館</option>
+                <option value="other">その他</option>
             </select><br>
             <label for="day">日:</label>
             <select id="day" name="day" onchange="displaySchedule()">
                 <option value="1">1日目</option>
                 <option value="2">2日目</option>
             </select><br>
+            <input type="text" id="other_loc" name="other_loc" onblur="checkBox('other_loc')"><br>
+            <p id="msgother_loc" style="color:red;" hidden>この欄は必須です。</p><br>
             <label for="startTime">開始時間:</label>
             <input type="time" id="startTime" name="startTime" onblur="checkBox('startTime');checkTime('startTime')"><br>
             <p id="msgstartTime" style="color:red;" hidden>この欄は必須です。</p><br>
@@ -105,12 +108,19 @@ window.onload = function() {
 }
 
 function displaySchedule() {
+    document.getElementById("other_loc").style.borderBlockColor = "black";
+    document.getElementById("msgother_loc").hidden = true
     document.getElementById("startTime").style.borderBlockColor = "black";
     document.getElementById("msgstartTime").hidden = true
     document.getElementById("endTime").style.borderBlockColor = "black";
     document.getElementById("msgendTime").hidden = true
     document.getElementById("event").style.borderBlockColor = "black";
     document.getElementById("msgevent").hidden = true
+    if (document.getElementById('loc').value == "その他"){
+        document.getElementById("other_loc").hidden = false
+    }else{
+        document.getElementById("other_loc").hidden = true
+    }
     fetch('/api/schedule')
     .then(response => {
         if (response.ok) {
@@ -312,56 +322,121 @@ function checkBox(element){
 function saveSchedule() {
             const loc = document.getElementById('loc').value;
             const day = document.getElementById('day').value;
+            const other_loc = document.getElementById('other_loc').value;
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
             const event = document.getElementById('event').value;
 
             // Check if end time is after start time
-            if (startTime && endTime && event && endTime > startTime) {
-                const scheduleItem = {
-                    loc: loc,
-                    day: day,
-                    startTime: startTime,
-                    endTime: endTime,
-                    event: event
-                };
-
-                fetch('/api/schedule', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(scheduleItem)
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Schedule saved successfully');
-                        displaySchedule();
-                        document.getElementById('startTime').value = '';
-                        document.getElementById('endTime').value = '';
-                        document.getElementById('event').value = '';
-                        //alert('Schedule saved successfully!');
-                    } else {
-                        console.error('Failed to save schedule:', response.statusText);
+            if (document.getElementById("loc").value !== "その他"){
+                if (startTime && endTime && event && endTime > startTime) {
+                    const scheduleItem = {
+                        loc: loc,
+                        day: day,
+                        startTime: startTime,
+                        endTime: endTime,
+                        event: event
+                    };
+    
+                    fetch('/api/schedule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(scheduleItem)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Schedule saved successfully');
+                            displaySchedule();
+                            document.getElementById('startTime').value = '';
+                            document.getElementById('endTime').value = '';
+                            document.getElementById('event').value = '';
+                            //alert('Schedule saved successfully!');
+                        } else {
+                            console.error('Failed to save schedule:', response.statusText);
+                            alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving schedule:', error);
                         alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                    });
+                } else {
+                    if (document.getElementById("loc").value == "その他"){
+                        if (!other_loc){
+                            document.getElementById("other_loc").style.borderBlockColor = "red";
+                            document.getElementById("msgohter_loc").hidden = false
+                        }
                     }
-                })
-                .catch(error => {
-                    console.error('Error saving schedule:', error);
-                    alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
-                });
-            } else {
-                if (!startTime){
-                    document.getElementById("startTime").style.borderBlockColor = "red";
-                    document.getElementById("msgstartTime").hidden = false
+                    if (!startTime){
+                        document.getElementById("startTime").style.borderBlockColor = "red";
+                        document.getElementById("msgstartTime").hidden = false
+                    }
+                    if (!endTime){
+                        document.getElementById("endTime").style.borderBlockColor = "red";
+                        document.getElementById("msgendTime").hidden = false
+                    }
+                    if (!event){
+                        document.getElementById("event").style.borderBlockColor = "red";
+                        document.getElementById("msgevent").hidden = false
+                    }
                 }
-                if (!endTime){
-                    document.getElementById("endTime").style.borderBlockColor = "red";
-                    document.getElementById("msgendTime").hidden = false
-                }
-                if (!event){
-                    document.getElementById("event").style.borderBlockColor = "red";
-                    document.getElementById("msgevent").hidden = false
+            }else{
+                if (other_loc && startTime && endTime && event && endTime > startTime) {
+                    const scheduleItem = {
+                        loc: loc,
+                        day: day,
+                        other_loc: other_loc,
+                        startTime: startTime,
+                        endTime: endTime,
+                        event: event
+                    };
+    
+                    fetch('/api/schedule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(scheduleItem)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Schedule saved successfully');
+                            displaySchedule();
+                            document.getElementById('other_loc').value = '';
+                            document.getElementById('startTime').value = '';
+                            document.getElementById('endTime').value = '';
+                            document.getElementById('event').value = '';
+                            //alert('Schedule saved successfully!');
+                        } else {
+                            console.error('Failed to save schedule:', response.statusText);
+                            alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving schedule:', error);
+                        alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
+                    });
+                } else {
+                    if (document.getElementById("loc").value == "その他"){
+                        if (!other_loc){
+                            document.getElementById("other_loc").style.borderBlockColor = "red";
+                            document.getElementById("msgohter_loc").hidden = false
+                        }
+                    }
+                    if (!startTime){
+                        document.getElementById("startTime").style.borderBlockColor = "red";
+                        document.getElementById("msgstartTime").hidden = false
+                    }
+                    if (!endTime){
+                        document.getElementById("endTime").style.borderBlockColor = "red";
+                        document.getElementById("msgendTime").hidden = false
+                    }
+                    if (!event){
+                        document.getElementById("event").style.borderBlockColor = "red";
+                        document.getElementById("msgevent").hidden = false
+                    }
                 }
             }
         }
