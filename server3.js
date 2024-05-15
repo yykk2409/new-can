@@ -58,9 +58,9 @@ function loadclassData() {
     }
 }
 let attendanceData = {"status":"false"};
-let countsData = {"status":"false"};
+let countsData = {};
 let quizData = {};
-let scheduleData = {"status":"false"};
+let scheduleData = {};
 let classData = {}
 loadclassData();
 async function loadAllData() {
