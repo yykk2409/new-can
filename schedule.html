@@ -334,11 +334,11 @@ function saveSchedule() {
             if (document.getElementById("loc").value !== "その他"){
                 if (startTime && endTime && event && endTime > startTime) {
                     const scheduleItem = {
-                        loc: loc,
-                        day: day,
-                        startTime: startTime,
-                        endTime: endTime,
-                        event: event
+                        "loc": loc,
+                        "day": day,
+                        "startTime": startTime,
+                        "endTime": endTime,
+                        "event": event
                     };
     
                     fetch('/api/schedule', {
@@ -388,12 +388,12 @@ function saveSchedule() {
             }else{
                 if (other_loc && startTime && endTime && event && endTime > startTime) {
                     const scheduleItem = {
-                        loc: loc,
-                        day: day,
-                        other_loc: other_loc,
-                        startTime: startTime,
-                        endTime: endTime,
-                        event: event
+                        "loc": loc,
+                        "day": day,
+                        "other_loc": other_loc,
+                        "startTime": startTime,
+                        "endTime": endTime,
+                        "event": event
                     };
     
                     fetch('/api/schedule', {
