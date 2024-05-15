@@ -84,8 +84,8 @@
                 <option value="1">1日目</option>
                 <option value="2">2日目</option>
             </select><br>
-            <label for="startTime">場所:</label>
-            <input type="text" id="other_loc" name="other_loc" onblur="checkBox('other_loc')"><br>
+            <label for="other_loc" id="other_loc_label" hidden>場所:</label>
+            <input type="text" id="other_loc" name="other_loc" onblur="checkBox('other_loc')" hidden><br>
             <p id="msgother_loc" style="color:red;" hidden>この欄は必須です。</p><br>
             <label for="startTime">開始時間:</label>
             <input type="time" id="startTime" name="startTime" onblur="checkBox('startTime');checkTime('startTime')"><br>
@@ -119,8 +119,10 @@ function displaySchedule() {
     document.getElementById("msgevent").hidden = true
     if (document.getElementById('loc').value == "その他"){
         document.getElementById("other_loc").hidden = false
+        document.getElementById("other_loc_label").hidden = false
     }else{
         document.getElementById("other_loc").hidden = true
+        document.getElementById("other_loc_label").hidden = false
     }
     fetch('/api/schedule')
     .then(response => {
