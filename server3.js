@@ -255,10 +255,10 @@ app.post('/api/delete_schedule',async (req,res) => {
     const { index, loc } = req.body;
     console.log(index)
     console.log(loc)
-    scheduleData[loc]["day"]splice( index, 1 );
-    scheduleData[loc]["startTime"]splice( index,1 );
-    scheduleData[loc]["endTime"]splice( index, 1 );
-    scheduleData[loc]["event"]splice( index, 1 );
+    scheduleData[loc]["day"].splice( index, 1 );
+    scheduleData[loc]["startTime"].splice( index,1 );
+    scheduleData[loc]["endTime"].splice( index, 1 );
+    scheduleData[loc]["event"].splice( index, 1 );
     await saveDataToPostgreSQL('schedule_data', scheduleData);
 
     res.status(200).send('Schedule saved successfully');
