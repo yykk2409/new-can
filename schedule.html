@@ -176,7 +176,6 @@ function sortScheduleByStartTime(dayIndex, scheduleArray) {
 
 function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
     dayIndex.forEach(index => {
-        const other_locArray = scheduleArray["other_loc"][index];
         const startTimeArray = scheduleArray["startTime"][index];
         const endTimeArray = scheduleArray["endTime"][index];
         const eventArray = scheduleArray["event"][index];
@@ -187,11 +186,7 @@ function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
                 const li = document.createElement('li');
                 const editButton = document.createElement('span');
                 const deleteButton = document.createElement('span');
-                if (other_locArray !== null){
-                    li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}  ${other_locArray[i]}`;
-                }else{
-                    li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
-                }
+                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
                 editButton.textContent = '✎';
                 deleteButton.textContent = '❌';
 
