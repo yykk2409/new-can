@@ -267,6 +267,9 @@ app.post('/api/delete_schedule',async (req,res) => {
 app.post('/api/schedule', async (req, res) => {
     const scheduleDatas = req.body;
     scheduleData[scheduleDatas.loc].day.push(scheduleDatas.day);
+    if (loc == "other"){
+	scheduleData[scheduleDatas.loc].other_loc.push(scheduleDatas.other_loc);
+    }
     scheduleData[scheduleDatas.loc].startTime.push(scheduleDatas.startTime);
     scheduleData[scheduleDatas.loc].endTime.push(scheduleDatas.endTime)
     scheduleData[scheduleDatas.loc].event.push(scheduleDatas.event)
