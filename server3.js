@@ -255,10 +255,10 @@ app.post('/api/delete_schedule',async (req,res) => {
     const { index, loc } = req.body;
     console.log(index)
     console.log(loc)
-    scheduleData[loc].day.splice( index, 1 );
-    scheduleData[loc].startTime.splice( index,1 );
-    scheduleData[loc].endTime.splice( index, 1 );
-    scheduleData[loc].event.splice( index, 1 );
+    scheduleData[loc]["day"]splice( index, 1 );
+    scheduleData[loc]["startTime"]splice( index,1 );
+    scheduleData[loc]["endTime"]splice( index, 1 );
+    scheduleData[loc]["event"]splice( index, 1 );
     await saveDataToPostgreSQL('schedule_data', scheduleData);
 
     res.status(200).send('Schedule saved successfully');
@@ -266,13 +266,13 @@ app.post('/api/delete_schedule',async (req,res) => {
 })
 app.post('/api/schedule', async (req, res) => {
     const scheduleDatas = req.body;
-    scheduleData[scheduleDatas.loc].day.push(scheduleDatas.day);
+    scheduleData[scheduleDatas["loc"]]["day"].push(scheduleDatas["day"]);
     if (loc == "other"){
-	scheduleData[scheduleDatas.loc].other_loc.push(scheduleDatas.other_loc);
+	scheduleData[scheduleDatas["loc"]]["other_loc"].push(scheduleDatas["other_loc"]);
     }
-    scheduleData[scheduleDatas.loc].startTime.push(scheduleDatas.startTime);
-    scheduleData[scheduleDatas.loc].endTime.push(scheduleDatas.endTime)
-    scheduleData[scheduleDatas.loc].event.push(scheduleDatas.event)
+    scheduleData[scheduleDatas["loc"]]["startTime"].push(scheduleDatas["startTime"]);
+    scheduleData[scheduleDatas["loc"]]["endTime"].push(scheduleDatas["endTime"])
+    scheduleData[scheduleDatas["loc"]]["event"].push(scheduleDatas["event"])
     
     // スケジュールデータをファイルに書き込む
     //writeFileToGitHub(scheduleFilePath, scheduleData)
@@ -299,14 +299,14 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
         console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
-        for (let i = 0; i < scheduleDatas.day.length; i++) {
-          const startTime = parseInt(scheduleDatas.startTime[i].replace(':', ''), 10);
-          const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
+        for (let i = 0; i < scheduleDatas["day"]length; i++) {
+          const startTime = parseInt(scheduleDatas["startTime"][i].replace(':', ''), 10);
+          const endTime = parseInt(scheduleDatas["endTime"][i].replace(':', ''), 10);
           console.log
           // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
-          if (scheduleDatas.day[i] == today.toString()){
+          if (scheduleDatas["day"][i] == today.toString()){
             if (currentTime >= startTime && currentTime <= endTime) {
-                return `${scheduleDatas.startTime[i]} - ${scheduleDatas.endTime[i]}`
+                return `${scheduleDatas["startTime"][i]} - ${scheduleDatas["endTime"][i]}`
             }
           }
         }
@@ -332,13 +332,13 @@ app.get('/current-schedule-event/:loc',(req,res) =>{
         console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
-        for (let i = 0; i < scheduleDatas.day.length; i++) {
-          const startTime = parseInt(scheduleDatas.startTime[i].replace(':', ''), 10);
-          const endTime = parseInt(scheduleDatas.endTime[i].replace(':', ''), 10);
-          const event = scheduleDatas.event[i];
+        for (let i = 0; i < scheduleDatas["day"]length; i++) {
+          const startTime = parseInt(scheduleDatas["startTime"][i].replace(':', ''), 10);
+          const endTime = parseInt(scheduleDatas["endTime"][i].replace(':', ''), 10);
+          const event = scheduleDatas["event"][i];
           console.log
           // 現在の時刻がイベントの開始時間と終了時間の間にある場合、そのイベントを返す
-          if (scheduleDatas.day[i] == today.toString()){
+          if (scheduleDatas["day"][i] == today.toString()){
             if (currentTime >= startTime && currentTime <= endTime) {
                 return event
             }
