@@ -176,6 +176,9 @@ function sortScheduleByStartTime(dayIndex, scheduleArray) {
 
 function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
     dayIndex.forEach(index => {
+        if (scheduleArray["other_loc"]){
+            const other_locArray = scheduleArray["other_loc"][index];
+        }
         const startTimeArray = scheduleArray["startTime"][index];
         const endTimeArray = scheduleArray["endTime"][index];
         const eventArray = scheduleArray["event"][index];
@@ -186,7 +189,11 @@ function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
                 const li = document.createElement('li');
                 const editButton = document.createElement('span');
                 const deleteButton = document.createElement('span');
-                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
+                if (other_locArray){
+                    li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]} in ${other_locArray[i]}`;
+                }else{
+                    li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
+                }
                 editButton.textContent = '✎';
                 deleteButton.textContent = '❌';
 
@@ -217,7 +224,11 @@ function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
             const editButton = document.createElement('span');
             const deleteButton = document.createElement('span');
 
-            li.textContent = `${startTimeArray} - ${endTimeArray}  :  ${eventArray}`;
+            if (other_locArray){
+                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]} in ${other_locArray[i]}`;
+            }else{
+                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
+            }
             editButton.textContent = '✎';
             deleteButton.textContent = '❌';
 
