@@ -299,7 +299,7 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
         console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
-        for (let i = 0; i < scheduleDatas["day"]length; i++) {
+        for (let i = 0; i < scheduleDatas["day"].length; i++) {
           const startTime = parseInt(scheduleDatas["startTime"][i].replace(':', ''), 10);
           const endTime = parseInt(scheduleDatas["endTime"][i].replace(':', ''), 10);
           console.log
@@ -332,7 +332,7 @@ app.get('/current-schedule-event/:loc',(req,res) =>{
         console.log(today);
         console.log(currentTime)
         // スケジュールデータから現在行われているイベントを検索
-        for (let i = 0; i < scheduleDatas["day"]length; i++) {
+        for (let i = 0; i < scheduleDatas["day"].length; i++) {
           const startTime = parseInt(scheduleDatas["startTime"][i].replace(':', ''), 10);
           const endTime = parseInt(scheduleDatas["endTime"][i].replace(':', ''), 10);
           const event = scheduleDatas["event"][i];
