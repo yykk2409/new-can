@@ -225,9 +225,9 @@ function displayScheduleItems(scheduleArray, dayIndex, scheduleList) {
             const deleteButton = document.createElement('span');
 
             if (other_locArray){
-                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]} in ${other_locArray[i]}`;
+                li.textContent = `${startTimeArray} - ${endTimeArray}  :  ${eventArray} in ${other_locArray}`;
             }else{
-                li.textContent = `${startTimeArray[i]} - ${endTimeArray[i]}  :  ${eventArray[i]}`;
+                li.textContent = `${startTimeArray} - ${endTimeArray}  :  ${eventArray}`;
             }
             editButton.textContent = '✎';
             deleteButton.textContent = '❌';
