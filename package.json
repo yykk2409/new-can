@@ -1,11 +1,11 @@
 {
   "name": "nazaotoki",
   "version": "1.0.0",
-  "main": "server2.js",
+  "main": "server3.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server2.js"
+    "start": "node server3.js"
   },
   "keywords": [],
   "author": "",
