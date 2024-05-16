@@ -256,6 +256,9 @@ app.post('/api/delete_schedule',async (req,res) => {
     console.log(index)
     console.log(loc)
     scheduleData[loc]["day"].splice( index, 1 );
+    if (scheduleData[loc]["other_loc"]){
+	scheduleData[loc]["other_loc"].splice( index, 1 );
+    }
     scheduleData[loc]["startTime"].splice( index,1 );
     scheduleData[loc]["endTime"].splice( index, 1 );
     scheduleData[loc]["event"].splice( index, 1 );
