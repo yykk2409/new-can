@@ -249,8 +249,12 @@ app.post('/quiz/:number', (req, res) => {
 });
 
 app.get('/schedule', async (req, res) => {
-    res.sendFile(path.resolve(new URL('./schedule.html', import.meta.url).pathname));
-    console.log("sendschedule")
+    if (attendanceData["status"] == "True"){
+	    res.sendFile(path.resolve(new URL('./schedule.html', import.meta.url).pathname));
+	    console.log("sendschedule")
+    }else{
+	    res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname))
+    }
 });
 app.post('/api/delete_schedule',async (req,res) => {
     console.log(req.body)
