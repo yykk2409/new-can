@@ -340,7 +340,7 @@ function saveSchedule() {
             const event = document.getElementById('event').value;
 
             // Check if end time is after start time
-            if (document.getElementById("loc").value !== "その他"){
+            if (document.getElementById("loc").value !== "other"){
                 if (startTime && endTime && event && endTime > startTime) {
                     const scheduleItem = {
                         "loc": loc,
@@ -375,7 +375,7 @@ function saveSchedule() {
                         alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                     });
                 } else {
-                    if (document.getElementById("loc").value == "その他"){
+                    if (document.getElementById("loc").value == "other"){
                         if (!other_loc){
                             document.getElementById("other_loc").style.borderBlockColor = "red";
                             document.getElementById("msgohter_loc").hidden = false
@@ -431,7 +431,7 @@ function saveSchedule() {
                         alert('データベースサーバーに接続中です。30秒後にもう一度お試しください。それでも解決しない場合は3410金澤にお問い合わせください。');
                     });
                 } else {
-                    if (document.getElementById("loc").value == "その他"){
+                    if (document.getElementById("loc").value == "other"){
                         if (!other_loc){
                             document.getElementById("other_loc").style.borderBlockColor = "red";
                             document.getElementById("msgohter_loc").hidden = false
