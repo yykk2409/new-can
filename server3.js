@@ -103,7 +103,7 @@ app.get("/enter-main",(req,res) =>{
 			countsData["main"] = (countsData["main"] || 0) + 1;
 			attendanceData[clientIP].main = "y"
 		}
-		res.redirect("https://koryo-fes.studio.site");
+		res.redirect("https://koryo-fes.com");
 	}else{
 		res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
 	}
@@ -151,19 +151,15 @@ app.get('/enter/:class', async (req, res) => {
 		 countsData[classroom] = (countsData[classroom] || 0) + 1;
 		 console.log("各クラスの在中人数は"+JSON.stringify(countsData))
 	 }
+		         // JSONファイルに入場履歴を保存
+	         //writeFileToGitHub(attendanceFilePath, ttendanceData)
+	 await saveDataToPostgreSQL('attendance_data', attendanceData);
+	 await saveDataToPostgreSQL('counts_data', countsData);
+
+	 res.redirect(`https://koryo-fes.com/enter/${req.params.class}`);
     }else{
 	    res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
     }
-    // 新しい教室を追加
-    
-
-    // JSONファイルに入場履歴を保存
-    //writeFileToGitHub(attendanceFilePath, ttendanceData)
-    await saveDataToPostgreSQL('attendance_data', attendanceData);
-    await saveDataToPostgreSQL('counts_data', countsData);
-
-    res.json({ message: 'Entered( ' + classroom + ' )successfully' });
-	 
 });
 
 // 退場処理
@@ -327,6 +323,19 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
       console.log(currentEvent)
       res.send(currentEvent)
 })
+app.post('/deleteDatas',(req,res) =>{
+	res.sendFile(path.resolve(new URL('./deleteData.html', import.meta.url).pathname))
+});
+app.get('/delete-attendance-data',(req,res) =>{
+	attendanceData={"status":"True"}
+	await saveDataToPostgreSQL('attendance_data', attendanceData);
+	res.status(200).send('attendanceData deleted successfully');
+});
+app.get('/delete-counts-data',(req,res) =>{
+	countsData={}
+	await saveDataToPostgreSQL('counts_data', countsData);
+	res.status(200).send('countsData deleted successfully');
+});
 app.get('/current-schedule-event/:loc',(req,res) =>{
     let loc = req.params.loc
     
