@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データ削除ページ</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], button {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: not-allowed;
+        }
+        button.enabled {
+            cursor: pointer;
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>データ削除</h2>
+        <label for="delete-confirmation">DELETE attendanceData を入力してください:</label><br>
+        <input type="text" id="delete-confirmation-attendance" placeholder="DELETE attendanceData"><br>
+        <button id="delete-attendance" disabled>削除</button><br>
+        <label for="delete-confirmation">DELETE countsData を入力してください:</label><br>
+        <input type="text" id="delete-confirmation-counts" placeholder="DELETE countsData"><br>
+        <button id="delete-counts" disabled>削除</button>
+    </div>
+
+    <script>
+        document.getElementById('delete-confirmation-attendance').addEventListener('input', function() {
+            const input = this.value;
+            const deleteButton = document.getElementById('delete-attendance');
+            if (input === 'DELETE attendanceData') {
+                deleteButton.disabled = false;
+                deleteButton.classList.add('enabled');
+            } else {
+                deleteButton.disabled = true;
+                deleteButton.classList.remove('enabled');
+            }
+        });
+
+        document.getElementById('delete-confirmation-counts').addEventListener('input', function() {
+            const input = this.value;
+            const deleteButton = document.getElementById('delete-counts');
+            if (input === 'DELETE countsData') {
+                deleteButton.disabled = false;
+                deleteButton.classList.add('enabled');
+            } else {
+                deleteButton.disabled = true;
+                deleteButton.classList.remove('enabled');
+            }
+        });
+
+        document.getElementById('delete-attendance').addEventListener('click', function() {
+            fetch('/delete-attendance-data', {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('attendanceData が削除されました');
+                } else {
+                    alert('削除に失敗しました');
+                }
+            });
+        });
+
+        document.getElementById('delete-counts').addEventListener('click', function() {
+            fetch('/delete-counts-data', {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('countsData が削除されました');
+                } else {
+                    alert('削除に失敗しました');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
