@@ -326,12 +326,12 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
 app.post('/deleteDatas',(req,res) =>{
 	res.sendFile(path.resolve(new URL('./deleteData.html', import.meta.url).pathname))
 });
-app.get('/delete-attendance-data',(req,res) =>{
+app.get('/delete-attendance-data',async (req,res) =>{
 	attendanceData={"status":"True"}
 	await saveDataToPostgreSQL('attendance_data', attendanceData);
 	res.status(200).send('attendanceData deleted successfully');
 });
-app.get('/delete-counts-data',(req,res) =>{
+app.get('/delete-counts-data',async (req,res) =>{
 	countsData={}
 	await saveDataToPostgreSQL('counts_data', countsData);
 	res.status(200).send('countsData deleted successfully');
