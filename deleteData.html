@@ -76,9 +76,7 @@
         });
 
         document.getElementById('delete-attendance').addEventListener('click', function() {
-            fetch('/delete-attendance-data', {
-                method: 'DELETE'
-            }).then(response => {
+            fetch('/delete-attendance-data').then(response => {
                 if (response.ok) {
                     alert('attendanceData が削除されました');
                 } else {
@@ -88,9 +86,7 @@
         });
 
         document.getElementById('delete-counts').addEventListener('click', function() {
-            fetch('/delete-counts-data', {
-                method: 'DELETE'
-            }).then(response => {
+            fetch('/delete-counts-data').then(response => {
                 if (response.ok) {
                     alert('countsData が削除されました');
                 } else {
