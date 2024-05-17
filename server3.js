@@ -323,7 +323,7 @@ app.get('/current-schedule-time/:loc',(req,res) =>{
       console.log(currentEvent)
       res.send(currentEvent)
 })
-app.post('/deleteDatas',(req,res) =>{
+app.get('/deleteDatas',(req,res) =>{
 	res.sendFile(path.resolve(new URL('./deleteData.html', import.meta.url).pathname))
 });
 app.get('/delete-attendance-data',async (req,res) =>{
