@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 const classFilePath = 'templates/class.json';
-const client = pool.connect();
+const client = await pool.connect();
 async function loadDataFromPostgreSQL(table, callback) {
     try {
         const result = await client.query(`SELECT * FROM ${table} WHERE id = $1`, [1]);
