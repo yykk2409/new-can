@@ -172,19 +172,20 @@ async function exitIfStayedTooLong() {
 	            const lastClassroom = classrooms[classrooms.length - 1];
 	            countsData[lastClassroom] = (countsData[lastClassroom] || 0) - 1;
 	            console.log(`User with IP ${clientIP} has exited from classroom ${lastClassroom}`);
-				   console.log("各クラスの在中人数は"+JSON.stringify(countsData))
-				   console.log(clientIP+"の入場履歴は"+attendanceData[clientIP].classrooms)
+		    console.log("各クラスの在中人数は"+JSON.stringify(countsData))
+		    console.log(clientIP+"の入場履歴は"+attendanceData[clientIP].classrooms)
 	            attendanceData[clientIP].classrooms.push('NaN'); // NaNを追加
 	            attendanceData[clientIP].timestamp = currentTime; // 入場時間更新
-	        }else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000){
+		    await saveDataToPostgreSQL('attendance_data', attendanceData);
+	            await saveDataToPostgreSQL('counts_data', countsData);
+	        }/*else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000){
 		    attendanceData[clientIP].timestamp = currentTime; 
-	        }
+	        }*/
 	    }
 
             // JSONファイルに更新されたデータを保存
             //writeFileToGitHub(attendanceFilePath, attendanceData)
-	    await saveDataToPostgreSQL('attendance_data', attendanceData);
-	    await saveDataToPostgreSQL('counts_data', countsData);
+	    
     }
 }
 
