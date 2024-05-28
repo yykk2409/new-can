@@ -81,11 +81,6 @@ async function loadAllData() {
 loadAllData();
 
 app.get("/enter-main",(req,res) =>{
-	const remoteAddress = req.connection.remoteAddress;
-
-	const splittedAddress = remoteAddress.split(':');
-	//const clientIP = splittedAddress[splittedAddress.length - 1];
-
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     	const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	console.log(clientIP)
@@ -112,11 +107,8 @@ app.get("/enter-main",(req,res) =>{
 // 入場処理
 app.get('/enter/:class', async (req, res) => {
     const classroom = classData[req.params.class];
-    const remoteAddress = req.connection.remoteAddress;
-    const splittedAddress = remoteAddress.split(':');
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
-	//const clientIP = splittedAddress[splittedAddress.length - 1];
     console.log(clientIP)
 
     // IPアドレスごとの入場履歴と時間を更新
@@ -189,12 +181,18 @@ async function exitIfStayedTooLong() {
     }
 }
 
+app.get('/getLastvisited',(req,res) =>{
+	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
+        const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+	let classroomes = attendanceData[clientIP].classrooms
+	let classroom = classroomes[classroomes.length -1]
+	res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classroom}`)
+	
+});
+
 // 一定間隔で退場処理を実行
 setInterval(exitIfStayedTooLong, 1000); // 1分ごとにチェック
 app.post('/form_send', async (req, res) => {
-	const remoteAddress = req.connection.remoteAddress;
-
-	const splittedAddress = remoteAddress.split(':');
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     const { age, gender } = req.body;
@@ -228,22 +226,7 @@ app.get('/scheduledata.json', (req, res) => {
 app.get('/statusCheck', (req, res) => {
     res.send(attendanceData["status"]);
 });
-app.post('/quiz/:number', (req, res) => {
-    const number = req.params.number;
-    const answer = req.body.answer;
 
-    // 正しい答えを取得（quizDataは適切に定義されていると仮定）
-    const correctAnswer = quizData.answer[number];
-
-    // 正解かどうかをチェック
-    if (answer === correctAnswer) {
-        console.log("正解");
-        res.send("正解");
-    } else {
-        console.log("不正解");
-        res.send("不正解");
-    }
-});
 
 app.get('/schedule', async (req, res) => {
     if (attendanceData["status"] == "True"){
