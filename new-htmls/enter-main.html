@@ -28,11 +28,14 @@
         console.log(`"${resp}"`);
 
         if(resp == "form"){
+            console.log("redirecting to form");
             window.location.href = "/form";
         }
         else if(resp == "ok"){
+            console.log("redirecting to https://koryo-fes.com");
             window.location.href = "https://koryo-fes.com";
         }else{
+            console.log("reload");
             setInterval(() => {
                 window.location.reload();
             }, 1500);
