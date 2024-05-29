@@ -16,5 +16,11 @@
            "src": "/(.*)",
            "dest": "server3.js"
        }
-   ]
+   ],
+   "functions":{
+      "./server3.js":{
+         "maxDuration":30
+      }
+   }
+   
 }
