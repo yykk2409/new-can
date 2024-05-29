@@ -27,6 +27,7 @@
     fetch(`/enter/${classcode}/process?id=${window.localStorage.getItem("id")}`)
     .then(resp => resp.text())
     .then(resp => {
+        console.log(`"${resp}"`);
         if(resp == "form"){
             window.location.href = "/form";
         }
