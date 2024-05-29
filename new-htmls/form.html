@@ -192,9 +192,14 @@
       })
     .then((data) => {
       console.log("Success:", data);
-      // フォーム送信成功後にリダイレクト
-      redirectToOriginalURL();
-      })
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTarget = urlParams.get("redirect");
+      if(redirectTarget == "main"){
+        window.location.href = `/enter-main`;
+      }else{
+        window.location.href = `/enter/${redirectTarget}`;
+      }
+    })
     .catch((error) => {
       console.error("Error:", error);
       // エラー処理を追加
