@@ -2,7 +2,7 @@
    "version": 2,
    "builds": [
        {
-           "src": "./server3.js",
+           "src": "./server4.js",
            "use": "@vercel/node",
            "config": {
               "includeFiles": [
@@ -14,13 +14,13 @@
    "routes": [
        {
            "src": "/(.*)",
-           "dest": "server3.js"
+           "dest": "server4.js"
        }
    ],
    "functions":{
       "./server3.js":{
          "maxDuration":30
-      }
+      },
       "./server4.js":{
          "maxDuration": 60
       }
