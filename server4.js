@@ -296,7 +296,7 @@ app.get('/api/schedule', (req, res) => {
     res.json(scheduleData);
 });
 
-app.get('/current-schedule-time/:loc', (req, res) => {
+app.get('/current-schedule-time/:loc', async (req, res) => {
     await loadAllData();
     
     loc = req.params.loc
