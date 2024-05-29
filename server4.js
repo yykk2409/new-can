@@ -82,7 +82,7 @@ loadAllData();
 
 app.get("/enter-main", async (req, res) => {
     await loadAllData();
-    
+
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     console.log(clientIP)
@@ -93,12 +93,12 @@ app.get("/enter-main", async (req, res) => {
         }
         if (attendanceData[clientIP].age == 'NaN' || attendanceData[clientIP].gender == 'NaN') {
             res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
-            console.log("sendfile")
-            return
+            console.log("sendfile");
+            return;
         }
         if (attendanceData[clientIP].main == "n") {
             countsData["main"] = (countsData["main"] || 0) + 1;
-            attendanceData[clientIP].main = "y"
+            attendanceData[clientIP].main = "y";
         }
         res.redirect("https://koryo-fes.com");
 
@@ -112,11 +112,11 @@ app.get("/enter-main", async (req, res) => {
 // 入場処理
 app.get('/enter/:class', async (req, res) => {
     await loadAllData();
-    
+
     const classroom = classData[req.params.class];
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
-    console.log(clientIP)
+    console.log(clientIP);
 
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
@@ -164,7 +164,7 @@ app.get('/enter/:class', async (req, res) => {
 // 退場処理
 async function exitIfStayedTooLong() {
     await loadAllData();
-    
+
     if (attendanceData["status"] == "True") {
         const currentTime = new Date().getTime();
         for (const clientIP in attendanceData) {
@@ -194,7 +194,7 @@ setInterval(exitIfStayedTooLong, 60000); // 1分ごとにチェック
 
 app.get('/getLastvisited', async (req, res) => {
     await loadAllData();
-    
+
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     let classrooms = attendanceData[clientIP].classrooms
@@ -205,15 +205,24 @@ app.get('/getLastvisited', async (req, res) => {
 
 app.post('/form_send', async (req, res) => {
     await loadAllData();
-    
+
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
-    attendanceData[clientIP] = {};
-    attendanceData[clientIP].age = age;
-    attendanceData[clientIP].gender = gender;
+    if(!attendanceData[clientIP]){
+        attendanceData[clientIP] = {
+            age: age,
+            gender: gender,
+            classrooms: [],
+            timestamp: new Date().getTime()
+        };
+    }else{
+        attendanceData[clientIP].age = age;
+        attendanceData[clientIP].gender = gender;
+        attendanceData[clientIP].timestamp = new Date().getTime();
+    }
     console.log('Age:', age);
     console.log('Gender:', gender);
     //writeFileToGitHub(attendanceFilePath, ttendanceData)
@@ -224,7 +233,7 @@ app.post('/form_send', async (req, res) => {
 // 教室ごとの人数を取得
 app.get('/count/:class', async (req, res) => {
     await loadAllData();
-    
+
     const classroom = req.params.class;
     const count = countsData[classroom] || 0;
     console.log("/count get")
@@ -246,7 +255,7 @@ app.get('/statusCheck', (req, res) => {
 
 app.get('/schedule', async (req, res) => {
     await loadAllData();
-    
+
     if (attendanceData["status"] == "True") {
         res.sendFile(path.resolve(new URL('./schedule.html', import.meta.url).pathname));
         console.log("sendschedule")
@@ -256,7 +265,7 @@ app.get('/schedule', async (req, res) => {
 });
 app.post('/api/delete_schedule', async (req, res) => {
     await loadAllData();
-    
+
     console.log(req.body)
     const { index, loc } = req.body;
     console.log(index)
@@ -275,7 +284,7 @@ app.post('/api/delete_schedule', async (req, res) => {
 })
 app.post('/api/schedule', async (req, res) => {
     await loadAllData();
-    
+
     const scheduleDatas = req.body;
     if (scheduleDatas["loc"] == "other") {
         scheduleData[scheduleDatas["loc"]]["other_loc"].push(scheduleDatas["other_loc"]);
@@ -299,7 +308,7 @@ app.get('/api/schedule', (req, res) => {
 
 app.get('/current-schedule-time/:loc', async (req, res) => {
     await loadAllData();
-    
+
     loc = req.params.loc
 
     scheduleDatas = scheduleData[loc]
@@ -346,7 +355,7 @@ app.get('/delete-counts-data', async (req, res) => {
 });
 app.get('/current-schedule-event/:loc', async (req, res) => {
     await loadAllData();
-    
+
     let loc = req.params.loc
 
     let scheduleDatas = scheduleData[loc]
