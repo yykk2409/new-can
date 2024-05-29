@@ -116,6 +116,7 @@ app.get("/enter-main/process", async (req, res) => {
 });
 
 app.get("/enter-main", (req, res) => {
+    res.contentType('text/html');
     res.status(200).send(readFileSync("./new-htmls/enter-main.html"));
 });
 
@@ -177,6 +178,7 @@ app.get('/enter/:class/process', async (req, res) => {
     }
 });
 app.get("/enter/:class", (req, res) => {
+    res.contentType('text/html');
     res.status(200).send(readFileSync("./new-htmls/enter-class.html").replace("{classcode}", req.params.class));
     exitIfStayedTooLong();
 });
