@@ -180,18 +180,18 @@ async function exitIfStayedTooLong() {
 	    
     }
 }
+// 一定間隔で退場処理を実行
+setInterval(exitIfStayedTooLong, 60000); // 1分ごとにチェック
 
 app.get('/getLastvisited',(req,res) =>{
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
         const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	let classroomes = attendanceData[clientIP].classrooms
 	let classroom = classroomes[classroomes.length -1]
-	res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classroom}`)
-	
+	classId = Object.keys(classData).find((key) => classData[key] === classroom)
+	res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
 
-// 一定間隔で退場処理を実行
-setInterval(exitIfStayedTooLong, 1000); // 1分ごとにチェック
 app.post('/form_send', async (req, res) => {
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
