@@ -1,29 +1,28 @@
 {
    "version": 2,
    "builds": [
-       {
-           "src": "./server4.js",
-           "use": "@vercel/node",
-           "config": {
-              "includeFiles": [
-                 "templates/**"
-              ]
-           }
-       }
+      {
+         "src": "./server4.js",
+         "use": "@vercel/node",
+         "config": {
+            "includeFiles": [
+               "templates/**"
+            ]
+         }
+      }
    ],
    "routes": [
-       {
-           "src": "/(.*)",
-           "dest": "server4.js"
-       }
+      {
+         "src": "/(.*)",
+         "dest": "server4.js"
+      }
    ],
-   "functions":{
-      "./server3.js":{
-         "maxDuration":30
+   "functions": {
+      "./server3.js": {
+         "maxDuration": 30
       },
-      "./server4.js":{
+      "./server4.js": {
          "maxDuration": 60
       }
    }
-   
 }
