@@ -97,7 +97,7 @@ app.get("/enter-main/process", async (req, res) => {
             //res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
             //res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
             res.status(200).send("form");
-            console.log("sendfile");
+            console.log("sent form");
             return;
         }
         if (attendanceData[clientIP].main == "n") {
