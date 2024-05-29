@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入場処理</title>
+</head>
+<body>
+    <h1>入場処理中...</h1>
+</body>
+<script>
+    function generateRandomSequenceOfCharacters(length){
+        let result = "";
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for(let i = 0; i < length; i++){
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+    }
+
+    if(window.localStorage.getItem("id") == null){
+        window.localStorage.setItem("id", generateRandomSequenceOfCharacters(16));
+    }
+
+    fetch(`/enter-main/process?id=${window.localStorage.getItem("id")}`);
+</script>
+<style>
+    body{
+        background-color: #0c0c0c;
+        color: bisque;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+</style>
+</html>
