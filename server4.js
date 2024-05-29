@@ -79,7 +79,7 @@ async function loadAllData() {
 }
 
 
-loadAllData();
+//loadAllData();
 
 app.get("/enter-main/process", async (req, res) => {
     await loadAllData();
