@@ -21,6 +21,9 @@
       "./server3.js":{
          "maxDuration":30
       }
+      "./server4.js":{
+         "maxDuration": 60
+      }
    }
    
 }
