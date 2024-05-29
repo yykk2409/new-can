@@ -186,8 +186,8 @@ setInterval(exitIfStayedTooLong, 60000); // 1分ごとにチェック
 app.get('/getLastvisited',(req,res) =>{
 	const ipList = (req.headers['x-forwarded-for'] || '').split(',');
         const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
-	let classroomes = attendanceData[clientIP].classrooms
-	let classroom = classroomes[classroomes.length -1]
+	let classrooms = attendanceData[clientIP].classrooms
+	let classroom = classrooms[classrooms.length -1]
 	classId = Object.keys(classData).find((key) => classData[key] === classroom)
 	res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
