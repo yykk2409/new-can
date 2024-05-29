@@ -7,7 +7,7 @@
          "config": {
             "includeFiles": [
                "templates/**/*",
-               "new-htmls/**/*",
+               "new-htmls/**/*"
             ]
          }
       }

@@ -22,7 +22,18 @@
         window.localStorage.setItem("id", generateRandomSequenceOfCharacters(16));
     }
 
-    fetch(`/enter-main/process?id=${window.localStorage.getItem("id")}`);
+    fetch(`/enter-main/process?id=${window.localStorage.getItem("id")}`)
+    .then(resp => resp.text())
+    .then(resp => {
+        if(resp == "form"){
+            window.location.href = "/form";
+        }
+        if(resp == "ok"){
+            window.location.href = "https://koryo-fes.com";
+        }else{
+            window.location.reload();
+        }
+    });
 </script>
 <style>
     body{

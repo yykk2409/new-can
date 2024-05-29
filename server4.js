@@ -95,7 +95,8 @@ app.get("/enter-main/process", async (req, res) => {
         }
         if (attendanceData[clientIP].age == 'NaN' || attendanceData[clientIP].gender == 'NaN') {
             //res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
-            res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
+            //res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
+            res.status(200).send("form");
             console.log("sendfile");
             return;
         }
@@ -103,12 +104,14 @@ app.get("/enter-main/process", async (req, res) => {
             countsData["main"] = (countsData["main"] || 0) + 1;
             attendanceData[clientIP].main = "y";
         }
-        res.redirect("https://koryo-fes.com");
+        //res.redirect("https://koryo-fes.com");
+        res.status(200).send("ok");
 
         await saveDataToPostgreSQL('attendance_data', attendanceData);
         await saveDataToPostgreSQL('counts_data', countsData);
     } else {
-        res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        //res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        res.status(200).send("db loading");
     }
 });
 
@@ -134,7 +137,8 @@ app.get('/enter/:class/process', async (req, res) => {
         }
         if (attendanceData[clientIP].age == 'NaN' || attendanceData[clientIP].gender == 'NaN') {
             //res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
-            res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
+            //res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
+            res.status(200).send("form");
             console.log("sendfile");
             return;
         }
@@ -164,9 +168,12 @@ app.get('/enter/:class/process', async (req, res) => {
         await saveDataToPostgreSQL('attendance_data', attendanceData);
         await saveDataToPostgreSQL('counts_data', countsData);
 
-        res.redirect(`https://koryo-fes.com/enter/${req.params.class}`);
+        //res.redirect(`https://koryo-fes.com/enter/${req.params.class}`);
+        res.status(200).send("ok");
+
     } else {
-        res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        //res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        res.status(200).send("db loading");
     }
 });
 app.get("/enter/:class", (req, res) => {
@@ -237,6 +244,9 @@ app.get('/getLastvisited', async (req, res) => {
     res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
 
+app.get("/form", (req, res) => {
+    res.status(200).send(readFileSync("./new-htmls/form.html"));
+})
 app.post('/form_send', async (req, res) => {
     await loadAllData();
 
