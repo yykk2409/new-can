@@ -211,6 +211,7 @@ app.post('/form_send', async (req, res) => {
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
+    attendanceData[clientIP] = {};
     attendanceData[clientIP].age = age;
     attendanceData[clientIP].gender = gender;
     console.log('Age:', age);
