@@ -188,7 +188,7 @@ app.get('/getLastvisited',(req,res) =>{
         const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
 	let classrooms = attendanceData[clientIP].classrooms
 	let classroom = classrooms[classrooms.length -1]
-	classId = Object.keys(classData).find((key) => classData[key] === classroom)
+	let classId = Object.keys(classData).find((key) => classData[key] === classroom)
 	res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
 
