@@ -31,8 +31,9 @@
         if(resp == "ok"){
             window.location.href = "https://koryo-fes.com";
         }else{
-            alert(resp);
-            window.location.reload();
+            setInterval(() => {
+                window.location.reload();
+            }, 1500);
         }
     });
 </script>

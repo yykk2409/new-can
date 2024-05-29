@@ -247,6 +247,7 @@ app.get('/getLastvisited', async (req, res) => {
 });
 
 app.get("/form", (req, res) => {
+    res.contentType("text/html");
     res.status(200).send(readFileSync("./new-htmls/form.html"));
 })
 app.post('/form_send', async (req, res) => {
