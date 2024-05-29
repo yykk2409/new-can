@@ -168,7 +168,7 @@
 
     // フォームデータから性別を取得
     const genderInputs = document.getElementsByName("gender");
-    let gender;
+    let gender = null;
     for (const input of genderInputs) {
       if (input.checked) {
         gender = input.value;
@@ -187,9 +187,9 @@
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
-        }
+      }
       return response.text(); // テキスト形式でレスポンスを取得
-      })
+    })
     .then((data) => {
       console.log("Success:", data);
       const urlParams = new URLSearchParams(window.location.search);
