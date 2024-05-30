@@ -116,7 +116,7 @@ app.get('/enter/:class', async (req, res) => {
     const classroom = classData[req.params.class];
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
-    console.log(clientIP)
+    console.log(clientIP);
 
     // IPアドレスごとの入場履歴と時間を更新
     const currentTime = new Date().getTime();
@@ -243,7 +243,6 @@ app.get('/statusCheck', (req, res) => {
     res.send(attendanceData["status"]);
 });
 
-
 app.get('/schedule', async (req, res) => {
     await loadAllData();
     
@@ -330,7 +329,7 @@ app.get('/current-schedule-time/:loc', async (req, res) => {
     const currentEvent = getCurrentEvent(scheduleDatas);
     console.log(currentEvent)
     res.send(currentEvent)
-})
+});
 app.get('/deleteDatas', (req, res) => {
     res.sendFile(path.resolve(new URL('./deleteData.html', import.meta.url).pathname))
 });
