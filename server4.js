@@ -237,7 +237,7 @@ async function exitIfStayedTooLong() {
 //TODO: ask what this endpoint is for and change code accordingly
 app.get('/getLastvisited', async (req, res) => {
     res.contentType("text/html");
-    res.status(200).send(readFileSync("./new-htmls/getLastvisited.html", {encoding: "utf-8"}));
+    res.status(200).send(readFileSync("./new-htmls/getLastVisited.html", {encoding: "utf-8"}));
 });
 app.get('/getLastvisited/process', async (req, res) => {
     await loadAllData();
