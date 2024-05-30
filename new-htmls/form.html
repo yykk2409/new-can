@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>アンケート</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    select {
+      margin-bottom: 15px;
+      width: calc(100% - 20px);
+      /* ボックスの余白を除いた幅 */
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    .gender-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    input[type="radio"] {
+      display: none;
+      /* ラジオボタンを非表示にする */
+    }
+
+    input[type="radio"]+label {
+      cursor: pointer;
+      padding: 8px 16px;
+      font-size: 16px;
+      border: 2px solid #007bff;
+      border-radius: 4px;
+      color: #007bff;
+    }
+
+    input[type="radio"]:checked+label {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    button {
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 10px 20px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>アンケート</h1>
+    <p>アンケートにご協力お願いします</p>
+    <form id="myForm">
+      <label for="age">年齢:</label>
+      <select id="age" name="age">
+        <option value="小学生未満">小学生未満</option>
+        <option value="小学生">小学生</option>
+        <option value="中学生">中学生</option>
+        <option value="高校生">高校生</option>
+        <option value="大学生">大学生</option>
+        <option value="大学卒業〜30">大学卒業〜29</option>
+        <option value="30代">30代</option>
+        <option value="40代">40代</option>
+        <option value="50代">50代</option>
+        <option value="60代">60代</option>
+        <option value="70代以上">70代以上</option>
+        <!-- 必要に応じて他の年齢層を追加 -->
+      </select>
+      <br />
+      <label>性別:</label>
+      <div class="gender-container">
+        <input type="radio" id="male" name="gender" value="男性" />
+        <label for="male">男性</label>
+        <input type="radio" id="female" name="gender" value="女性" />
+        <label for="female">女性</label>
+        <input type="radio" id="other" name="gender" value="その他" />
+        <label for="other">その他</label>
+      </div>
+      <!-- 必要に応じて他の性別を追加 -->
+      <br /><br />
+      <button type="submit">送信</button>
+    </form>
+  </div>
+</body>
+
+</html>
+<script>
+  if (window.localStorage.getItem("id") == null) {
+    window.localStorage.setItem("id", generateRandomSequenceOfCharacters(16));
+  }
+
+  function generateRandomSequenceOfCharacters(length) {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    return result;
+  }
+
+  // 現在のページのURLを取得する関数
+  function getCurrentURL() {
+    return window.location.href;
+  }
+
+  // フォーム送信後にリダイレクトする関数
+  function redirectToOriginalURL() {
+    const originalURL = getCurrentURL(); // 現在のページのURLを取得
+    window.location.href = originalURL; // 現在のページのURLにリダイレクト
+  }
+
+  // フォームの送信イベントハンドラ
+  document.getElementById("myForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // デフォルトのフォーム送信を無効化
+
+    const formData = new FormData(this); // フォームデータを取得
+
+    // フォームデータから年齢を取得
+    const age = formData.get("age");
+
+    // フォームデータから性別を取得
+    const genderInputs = document.getElementsByName("gender");
+    let gender = null;
+    for (const input of genderInputs) {
+      if (input.checked) {
+        gender = input.value;
+        break;
+      }
+    }
+
+    // /form_send に POST リクエストを送信
+    fetch(`/form_send?id=${window.localStorage.getItem("id")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ age, gender }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.text(); // テキスト形式でレスポンスを取得
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTarget = urlParams.get("redirect");
+      if(redirectTarget == "main"){
+        window.location.href = `/enter-main`;
+      }else{
+        window.location.href = `/enter/${redirectTarget}`;
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      // エラー処理を追加
+    });
+  });
+</script>

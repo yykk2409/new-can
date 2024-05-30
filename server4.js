@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import express from 'express';
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import { Octokit } from "@octokit/rest";
 import pg from 'pg';
 const { Pool } = pg;
@@ -65,6 +65,7 @@ let classData = {}
 loadclassData();
 async function loadAllData() {
     try {
+        loadclassData();
         await Promise.all([
             loadDataFromPostgreSQL('attendance_data', (data) => { attendanceData = data }),
             loadDataFromPostgreSQL('counts_data', (data) => { countsData = data }),
@@ -78,13 +79,14 @@ async function loadAllData() {
 }
 
 
-loadAllData();
+//loadAllData();
 
-app.get("/enter-main", async (req, res) => {
+app.get("/enter-main/process", async (req, res) => {
     await loadAllData();
-    
+
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    //const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    const clientIP = req.query.id;
     console.log(clientIP)
     const currentTime = new Date().getTime();
     if (attendanceData["status"] == "True") {
@@ -92,30 +94,40 @@ app.get("/enter-main", async (req, res) => {
             attendanceData[clientIP] = { age: 'NaN', gender: 'NaN', main: "n", classrooms: [], timestamp: currentTime };
         }
         if (attendanceData[clientIP].age == 'NaN' || attendanceData[clientIP].gender == 'NaN') {
-            res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
-            console.log("sendfile")
-            return
+            //res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
+            //res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
+            res.status(200).send("form");
+            console.log("sent form");
+            return;
         }
         if (attendanceData[clientIP].main == "n") {
             countsData["main"] = (countsData["main"] || 0) + 1;
-            attendanceData[clientIP].main = "y"
+            attendanceData[clientIP].main = "y";
         }
-        res.redirect("https://koryo-fes.com");
+        //res.redirect("https://koryo-fes.com");
+        res.status(200).send("ok");
 
         await saveDataToPostgreSQL('attendance_data', attendanceData);
         await saveDataToPostgreSQL('counts_data', countsData);
     } else {
-        res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        //res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        res.status(200).send("db loading");
     }
 });
 
+app.get("/enter-main", (req, res) => {
+    res.contentType('text/html');
+    res.status(200).send(readFileSync("./new-htmls/enter-main.html", {encoding: "utf-8"}));
+});
+
 // 入場処理
-app.get('/enter/:class', async (req, res) => {
+app.get('/enter/:class/process', async (req, res) => {
     await loadAllData();
-    
+
     const classroom = classData[req.params.class];
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    //const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    const clientIP = req.query.id;
     console.log(clientIP);
 
     // IPアドレスごとの入場履歴と時間を更新
@@ -125,76 +137,107 @@ app.get('/enter/:class', async (req, res) => {
             attendanceData[clientIP] = { age: 'NaN', gender: 'NaN', main: "n", classrooms: [], timestamp: currentTime };
         }
         if (attendanceData[clientIP].age == 'NaN' || attendanceData[clientIP].gender == 'NaN') {
-            res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
-            console.log("sendfile")
-            return
+            //res.sendFile(path.resolve(new URL('./form.html', import.meta.url).pathname));
+            //res.sendFile(path.resolve(new URL('./new-htmls/form.html', import.meta.url).pathname));
+            res.status(200).send("form");
+            console.log("sendfile");
+            return;
         }
         if (attendanceData[clientIP].main == "n") {
             countsData["main"] = (countsData["main"] || 0) + 1;
-            attendanceData[clientIP].main = "y"
+            attendanceData[clientIP].main = "y";
         }
         attendanceData[clientIP].timestamp = currentTime
         if (attendanceData[clientIP].classrooms[attendanceData[clientIP].classrooms.length - 1] == 'NaN') {
             attendanceData[clientIP].classrooms.pop();
             attendanceData[clientIP].classrooms.push(classroom);
             countsData[classroom] = (countsData[classroom] || 0) + 1;
-            console.log("各クラスの在中人数は" + JSON.stringify(countsData))
+            console.log("各クラスの在中人数は" + JSON.stringify(countsData));
         } else if (attendanceData[clientIP].classrooms[attendanceData[clientIP].classrooms.length - 1] == classroom) {
-            console.log("2回連続は無効です")
-            console.log("各クラスの在中人数は" + JSON.stringify(countsData))
+            console.log("2回連続は無効です");
+            console.log("各クラスの在中人数は" + JSON.stringify(countsData));
         } else {
             attendanceData[clientIP].classrooms.push(classroom);
             if (attendanceData[clientIP].classrooms.length > 1) {
                 countsData[attendanceData[clientIP].classrooms[attendanceData[clientIP].classrooms.length - 2]] = (countsData[attendanceData[clientIP].classrooms[attendanceData[clientIP].classrooms.length - 2]] || 0) - 1;
             }
             countsData[classroom] = (countsData[classroom] || 0) + 1;
-            console.log("各クラスの在中人数は" + JSON.stringify(countsData))
+            console.log("各クラスの在中人数は" + JSON.stringify(countsData));
         }
         // JSONファイルに入場履歴を保存
         //writeFileToGitHub(attendanceFilePath, ttendanceData)
         await saveDataToPostgreSQL('attendance_data', attendanceData);
         await saveDataToPostgreSQL('counts_data', countsData);
 
-        res.redirect(`https://koryo-fes.com/enter/${req.params.class}`);
+        //res.redirect(`https://koryo-fes.com/enter/${req.params.class}`);
+        res.status(200).send("ok");
+
     } else {
-        res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        //res.sendFile(path.resolve(new URL('./loading.html', import.meta.url).pathname));
+        res.status(200).send("db loading");
     }
+});
+app.get("/enter/:class", (req, res) => {
+    res.contentType('text/html');
+    res.status(200).send(readFileSync("./new-htmls/enter-class.html", {encoding: "utf-8"}).replace("{classcode}", req.params.class));
+    exitIfStayedTooLong();
 });
 
 // 退場処理
 async function exitIfStayedTooLong() {
     await loadAllData();
-    
-    if (attendanceData["status"] == "True") {
-        const currentTime = new Date().getTime();
-        for (const clientIP in attendanceData) {
-            const { classrooms, timestamp } = attendanceData[clientIP];
-            if (classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] !== 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000) {
-                const lastClassroom = classrooms[classrooms.length - 1];
-                countsData[lastClassroom] = (countsData[lastClassroom] || 0) - 1;
-                console.log(`User with IP ${clientIP} has exited from classroom ${lastClassroom}`);
-                console.log("各クラスの在中人数は" + JSON.stringify(countsData))
-                console.log(clientIP + "の入場履歴は" + attendanceData[clientIP].classrooms)
-                attendanceData[clientIP].classrooms.push('NaN'); // NaNを追加
-                attendanceData[clientIP].timestamp = currentTime; // 入場時間更新
-                await saveDataToPostgreSQL('attendance_data', attendanceData);
-                await saveDataToPostgreSQL('counts_data', countsData);
-            }/*else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000){
-		    attendanceData[clientIP].timestamp = currentTime; 
-	        }*/
+
+    const currentTime = new Date().getTime();
+    for(const clientIP in attendanceData) {
+        if ((currentTime - attendanceData[clientIP].timestamp) >= 15 * 60 * 1000) {
+            const length = attendanceData[clientIP].classrooms.length;
+            const lastClass = attendanceData[clientIP].classrooms[length - 1]
+            if(lastClass == "NaN"){
+                continue;
+            }
+            countsData[lastClass] = (countsData[lastClass] || 0) - 1;
+            console.log(`use with id: ${clientIP} has exited from ${lastClass} exceeding the 15min timeout`);
+            console.log(`各クラスの人数: ${JSON.stringify(countsData)}`);
+            console.log(`${clientIP}の入場履歴は ${JSON.stringify(attendanceData[clientIP].classrooms)}`);
+            attendanceData[clientIP].classrooms.push("NaN");
+            attendanceData[clientIP].timestamp = currentTime;
         }
-
-        // JSONファイルに更新されたデータを保存
-        //writeFileToGitHub(attendanceFilePath, attendanceData)
-
     }
+    await saveDataToPostgreSQL("attendance_data", attendanceData);
+    await saveDataToPostgreSQL("counts_data", countsData);
+    
+
+    //if (attendanceData["status"] == "True") {
+    //    const currentTime = new Date().getTime();
+    //    for (const clientIP in attendanceData) {
+    //        const { classrooms, timestamp } = attendanceData[clientIP];
+    //        if (classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] !== 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000) {
+    //            const lastClassroom = classrooms[classrooms.length - 1];
+    //            countsData[lastClassroom] = (countsData[lastClassroom] || 0) - 1;
+    //            console.log(`User with IP ${clientIP} has exited from classroom ${lastClassroom}`);
+    //            console.log("各クラスの在中人数は" + JSON.stringify(countsData))
+    //            console.log(clientIP + "の入場履歴は" + attendanceData[clientIP].classrooms)
+    //            attendanceData[clientIP].classrooms.push('NaN'); // NaNを追加
+    //            attendanceData[clientIP].timestamp = currentTime; // 入場時間更新
+    //            await saveDataToPostgreSQL('attendance_data', attendanceData);
+    //            await saveDataToPostgreSQL('counts_data', countsData);
+    //        }/*else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000){
+	//	    attendanceData[clientIP].timestamp = currentTime; 
+	//        }*/
+    //    }
+    //    // JSONファイルに更新されたデータを保存
+    //    //writeFileToGitHub(attendanceFilePath, attendanceData)
+    //}
 }
 // 一定間隔で退場処理を実行
-setInterval(exitIfStayedTooLong, 60000); // 1分ごとにチェック
+//moved to /enter/:class
+//setInterval(exitIfStayedTooLong, 60000); // 1分ごとにチェック
 
+
+//TODO: ask what this endpoint is for and change code accordingly
 app.get('/getLastvisited', async (req, res) => {
     await loadAllData();
-    
+
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
     const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
     let classrooms = attendanceData[clientIP].classrooms
@@ -203,17 +246,30 @@ app.get('/getLastvisited', async (req, res) => {
     res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
 
+app.get("/form", (req, res) => {
+    res.contentType("text/html");
+    res.status(200).send(readFileSync("./new-htmls/form.html", {encoding: "utf-8"}));
+})
 app.post('/form_send', async (req, res) => {
     await loadAllData();
-    
+
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    //const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    const clientIP = req.query.id;
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
-    attendanceData[clientIP] = {};
-    attendanceData[clientIP].age = age;
-    attendanceData[clientIP].gender = gender;
+    if(!attendanceData[clientIP]){
+        attendanceData[clientIP] = {
+            age: age,
+            gender: gender,
+            classrooms: [],
+            timestamp: new Date().getTime()
+        };
+    }else{
+        attendanceData[clientIP].age = age;
+        attendanceData[clientIP].gender = gender;
+    }
     console.log('Age:', age);
     console.log('Gender:', gender);
     //writeFileToGitHub(attendanceFilePath, ttendanceData)
@@ -224,28 +280,32 @@ app.post('/form_send', async (req, res) => {
 // 教室ごとの人数を取得
 app.get('/count/:class', async (req, res) => {
     await loadAllData();
-    
+
     const classroom = req.params.class;
     const count = countsData[classroom] || 0;
     console.log("/count get")
     res.json({ count });
 });
-app.get('/attendancedata.json', (req, res) => {
+app.get('/attendancedata.json', async (req, res) => {
+    await loadAllData();
     res.json({ attendanceData });
 });
-app.get('/countsdata.json', (req, res) => {
+app.get('/countsdata.json', async (req, res) => {
+    await loadAllData();
     res.json({ countsData });
 });
-app.get('/scheduledata.json', (req, res) => {
+app.get('/scheduledata.json', async (req, res) => {
+    await loadAllData();
     res.json({ scheduleData });
 });
-app.get('/statusCheck', (req, res) => {
+app.get('/statusCheck', async (req, res) => {
+    await loadAllData();
     res.send(attendanceData["status"]);
 });
 
 app.get('/schedule', async (req, res) => {
     await loadAllData();
-    
+
     if (attendanceData["status"] == "True") {
         res.sendFile(path.resolve(new URL('./schedule.html', import.meta.url).pathname));
         console.log("sendschedule")
@@ -255,7 +315,7 @@ app.get('/schedule', async (req, res) => {
 });
 app.post('/api/delete_schedule', async (req, res) => {
     await loadAllData();
-    
+
     console.log(req.body)
     const { index, loc } = req.body;
     console.log(index)
@@ -274,7 +334,7 @@ app.post('/api/delete_schedule', async (req, res) => {
 })
 app.post('/api/schedule', async (req, res) => {
     await loadAllData();
-    
+
     const scheduleDatas = req.body;
     if (scheduleDatas["loc"] == "other") {
         scheduleData[scheduleDatas["loc"]]["other_loc"].push(scheduleDatas["other_loc"]);
@@ -298,10 +358,10 @@ app.get('/api/schedule', (req, res) => {
 
 app.get('/current-schedule-time/:loc', async (req, res) => {
     await loadAllData();
-    
-    loc = req.params.loc
 
-    scheduleDatas = scheduleData[loc]
+    const loc = req.params.loc;
+
+    const scheduleDatas = scheduleData[loc];
     function getCurrentEvent(scheduleDatas) {
         // 現在の時刻を取得
         const now = new Date();
@@ -345,7 +405,7 @@ app.get('/delete-counts-data', async (req, res) => {
 });
 app.get('/current-schedule-event/:loc', async (req, res) => {
     await loadAllData();
-    
+
     let loc = req.params.loc
 
     let scheduleDatas = scheduleData[loc]

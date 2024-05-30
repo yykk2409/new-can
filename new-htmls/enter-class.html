@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <var id="class-code" hidden>{classcode}</var>
+    <title>入場処理</title>
+</head>
+<body>
+    <h1>入場処理中...</h1>
+</body>
+<script>
+    const classcode = document.querySelector("#class-code").textContent;
+    function generateRandomSequenceOfCharacters(length){
+        let result = "";
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for(let i = 0; i < length; i++){
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+    }
+
+    if(window.localStorage.getItem("id") == null){
+        window.localStorage.setItem("id", generateRandomSequenceOfCharacters(16));
+    }
+
+    fetch(`/enter/${classcode}/process?id=${window.localStorage.getItem("id")}`)
+    .then(resp => resp.text())
+    .then(resp => {
+        console.log(`"${resp}"`);
+        if(resp == "form"){
+            console.log("redirecting to form");
+            window.location.href = `/form?redirect=${classcode}`;
+        }
+        else if(resp == "ok"){
+            console.log("redirecting to https://koryo-fes.com with classcode");
+            window.location.href = `https://koryo-fes.com/enter/${classcode}`;
+        }else{
+            console.log("reload");
+            setInterval(() => {
+                window.location.reload();
+            }, 1500);
+        }
+    });
+</script>
+<style>
+    body{
+        background-color: #0c0c0c;
+        color: bisque;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+</style>
+</html>
