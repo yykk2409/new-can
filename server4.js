@@ -236,15 +236,25 @@ async function exitIfStayedTooLong() {
 
 //TODO: ask what this endpoint is for and change code accordingly
 app.get('/getLastvisited', async (req, res) => {
+    res.contentType("text/html");
+    res.status(200).send(readFileSync("./new-htmls/getLastvisited.html", {encoding: "utf-8"}));
+});
+app.get('/getLastvisited/process', async (req, res) => {
     await loadAllData();
 
     const ipList = (req.headers['x-forwarded-for'] || '').split(',');
-    const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+    //const clientIP = ipList.length > 0 ? ipList[0] : req.connection.remoteAddress;
+
+    const clientIP = req.query.id;
     let classrooms = attendanceData[clientIP].classrooms
     let classroom = classrooms[classrooms.length - 1]
-    let classId = Object.keys(classData).find((key) => classData[key] === classroom)
-    res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
+    let classId = Object.keys(classData).find((key) => classData[key] === classroom);
+    res.status(200).json({
+        classId: classId
+    });
+    //res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
+
 
 app.get("/form", (req, res) => {
     res.contentType("text/html");
