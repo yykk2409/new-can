@@ -6,12 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>アンケート</title>
   <style>
+    nav{
+      position: fixed;
+      top: 0;
+      background-color: rgb(255, 255, 86);
+      text-align: center;
+      width: 100vw;
+    }
+    nav h1{
+      font-size: 17px;
+      color: rgb(255, 68, 68);
+    }
+    @media screen and (max-width: 420px) {
+      nav h1{
+        font-size: 13px;
+      }
+    }
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
       padding: 0;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -89,6 +106,9 @@
 </head>
 
 <body>
+  <nav>
+    <h1>プライベートモードを使用している場合は<br>プライベートモードから抜けてください。<br>通常のブラウザーであれば、<br>2回以上アンケートが表示されることはありません。</h1>
+  </nav>
   <div class="container">
     <h1>アンケート</h1>
     <p>アンケートにご協力お願いします</p>

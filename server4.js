@@ -117,7 +117,7 @@ app.get("/enter-main/process", async (req, res) => {
 
 app.get("/enter-main", (req, res) => {
     res.contentType('text/html');
-    res.status(200).send(readFileSync("./new-htmls/enter-main.html", {encoding: "utf-8"}));
+    res.status(200).send(readFileSync("./new-htmls/enter-main.html", { encoding: "utf-8" }));
 });
 
 // 入場処理
@@ -179,7 +179,7 @@ app.get('/enter/:class/process', async (req, res) => {
 });
 app.get("/enter/:class", (req, res) => {
     res.contentType('text/html');
-    res.status(200).send(readFileSync("./new-htmls/enter-class.html", {encoding: "utf-8"}).replace("{classcode}", req.params.class));
+    res.status(200).send(readFileSync("./new-htmls/enter-class.html", { encoding: "utf-8" }).replace("{classcode}", req.params.class));
     exitIfStayedTooLong();
 });
 
@@ -188,11 +188,11 @@ async function exitIfStayedTooLong() {
     await loadAllData();
 
     const currentTime = new Date().getTime();
-    for(const clientIP in attendanceData) {
+    for (const clientIP in attendanceData) {
         if ((currentTime - attendanceData[clientIP].timestamp) >= 15 * 60 * 1000) {
             const length = attendanceData[clientIP].classrooms.length;
             const lastClass = attendanceData[clientIP].classrooms[length - 1]
-            if(lastClass == "NaN"){
+            if (lastClass == "NaN") {
                 continue;
             }
             countsData[lastClass] = (countsData[lastClass] || 0) - 1;
@@ -205,7 +205,7 @@ async function exitIfStayedTooLong() {
     }
     await saveDataToPostgreSQL("attendance_data", attendanceData);
     await saveDataToPostgreSQL("counts_data", countsData);
-    
+
 
     //if (attendanceData["status"] == "True") {
     //    const currentTime = new Date().getTime();
@@ -222,8 +222,8 @@ async function exitIfStayedTooLong() {
     //            await saveDataToPostgreSQL('attendance_data', attendanceData);
     //            await saveDataToPostgreSQL('counts_data', countsData);
     //        }/*else if(classrooms && classrooms.length > 0 && classrooms[classrooms.length - 1] == 'NaN' && (currentTime - timestamp) >= 15 * 60 * 1000){
-	//	    attendanceData[clientIP].timestamp = currentTime; 
-	//        }*/
+    //	    attendanceData[clientIP].timestamp = currentTime; 
+    //        }*/
     //    }
     //    // JSONファイルに更新されたデータを保存
     //    //writeFileToGitHub(attendanceFilePath, attendanceData)
@@ -234,10 +234,9 @@ async function exitIfStayedTooLong() {
 //setInterval(exitIfStayedTooLong, 60000); // 1分ごとにチェック
 
 
-//TODO: ask what this endpoint is for and change code accordingly
 app.get('/getLastvisited', async (req, res) => {
     res.contentType("text/html");
-    res.status(200).send(readFileSync("./new-htmls/getLastVisited.html", {encoding: "utf-8"}));
+    res.status(200).send(readFileSync("./new-htmls/getLastVisited.html", { encoding: "utf-8" }));
 });
 app.get('/getLastvisited/process', async (req, res) => {
     await loadAllData();
@@ -252,13 +251,12 @@ app.get('/getLastvisited/process', async (req, res) => {
     res.status(200).json({
         classId: classId
     });
-    //res.redirect(`https://quiz-eta-two.vercel.app/html/entry?class=${classId}`)
 });
 
 
 app.get("/form", (req, res) => {
     res.contentType("text/html");
-    res.status(200).send(readFileSync("./new-htmls/form.html", {encoding: "utf-8"}));
+    res.status(200).send(readFileSync("./new-htmls/form.html", { encoding: "utf-8" }));
 })
 app.post('/form_send', async (req, res) => {
     await loadAllData();
@@ -269,14 +267,15 @@ app.post('/form_send', async (req, res) => {
     const { age, gender } = req.body;
 
     // フォームデータを入場データに保存
-    if(!attendanceData[clientIP]){
+    if (!attendanceData[clientIP]) {
         attendanceData[clientIP] = {
             age: age,
             gender: gender,
             classrooms: [],
+            main: "n",
             timestamp: new Date().getTime()
         };
-    }else{
+    } else {
         attendanceData[clientIP].age = age;
         attendanceData[clientIP].gender = gender;
     }
@@ -351,8 +350,8 @@ app.post('/api/schedule', async (req, res) => {
     }
     scheduleData[scheduleDatas["loc"]]["day"].push(scheduleDatas["day"]);
     scheduleData[scheduleDatas["loc"]]["startTime"].push(scheduleDatas["startTime"]);
-    scheduleData[scheduleDatas["loc"]]["endTime"].push(scheduleDatas["endTime"])
-    scheduleData[scheduleDatas["loc"]]["event"].push(scheduleDatas["event"])
+    scheduleData[scheduleDatas["loc"]]["endTime"].push(scheduleDatas["endTime"]);
+    scheduleData[scheduleDatas["loc"]]["event"].push(scheduleDatas["event"]);
 
     // スケジュールデータをファイルに書き込む
     //writeFileToGitHub(scheduleFilePath, scheduleData)

@@ -20,6 +20,7 @@
 
     if(window.localStorage.getItem("id") == null){
         window.localStorage.setItem("id", generateRandomSequenceOfCharacters(16));
+        
     }
 
     fetch(`/enter-main/process?id=${window.localStorage.getItem("id")}`)
