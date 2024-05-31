@@ -272,7 +272,7 @@ app.post('/form_send', async (req, res) => {
             age: age,
             gender: gender,
             classrooms: [],
-            main: "n",
+            main: "y",
             timestamp: new Date().getTime()
         };
     } else {
