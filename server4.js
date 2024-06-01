@@ -107,7 +107,7 @@ app.get("/enter-main/process", async (req, res) => {
         }
         //res.redirect("https://koryo-fes.com");
         res.status(200).send("ok");
-
+      
         await saveDataToPostgreSQL('attendance_data', attendanceData);
         await saveDataToPostgreSQL('counts_data', countsData);
     } else {
@@ -259,7 +259,6 @@ app.get('/getLastvisited/process', async (req, res) => {
     });
 });
 
-
 app.get("/form", (req, res) => {
     res.contentType("text/html");
     res.status(200).send(readFileSync("./new-htmls/form.html", { encoding: "utf-8" }));
@@ -299,6 +298,19 @@ app.get('/count/:class', async (req, res) => {
     const classroom = req.params.class;
     const count = countsData[classroom] || 0;
     console.log("/count get")
+    res.json({ count });
+});
+app.get("/count-main", async (req, resp) => {
+    await loadAllData();
+
+    const keys = Object.keys(attendanceData);
+    let count = 0;
+    for(let i = 0; i < keys.length; i++){
+        if(keys[i] == "status"){
+            continue;
+        }
+        count++;
+    }
     res.json({ count });
 });
 app.get('/attendancedata.json', async (req, res) => {
