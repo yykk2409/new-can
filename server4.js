@@ -202,6 +202,9 @@ async function exitIfStayedTooLong() {
                 continue;
             }
             countsData[lastClass] = (countsData[lastClass] || 0) - 1;
+            if(countsData[lastClass] < 0){
+                countsData[lastClass] = 0;
+            }
             console.log(`use with id: ${clientIP} has exited from ${lastClass} exceeding the 15min timeout`);
             console.log(`各クラスの人数: ${JSON.stringify(countsData)}`);
             console.log(`${clientIP}の入場履歴は ${JSON.stringify(attendanceData[clientIP].classrooms)}`);
