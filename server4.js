@@ -256,7 +256,12 @@ app.get('/getLastvisited/process', async (req, res) => {
     const clientIP = req.query.id;
     let classrooms = attendanceData[clientIP].classrooms
     let classroom = classrooms[classrooms.length - 1]
-    let classId = Object.keys(classData).find((key) => classData[key] === classroom);
+    let classId;
+    if (classroom != "NaN"){
+        classId = Object.keys(classData).find((key) => classData[key] === classroom);
+    }else{
+        classId = Object.keys(classData).find((key) => classData[key] === classrooms[classrooms.length - 2]);
+    }
     res.status(200).json({
         classId: classId
     });
