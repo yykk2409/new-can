@@ -57,6 +57,7 @@ function loadclassData() {
         console.error('Error reading counts file:', err);
     }
 }
+
 let attendanceData = { "status": "false" };
 let countsData = {};
 let quizData = {};
