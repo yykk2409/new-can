@@ -304,13 +304,7 @@ app.get("/count-main", async (req, resp) => {
     await loadAllData();
 
     const keys = Object.keys(attendanceData);
-    let count = 0;
-    for(let i = 0; i < keys.length; i++){
-        if(keys[i] == "status"){
-            continue;
-        }
-        count++;
-    }
+    let count = keys.length - 1;
     res.json({ count });
 });
 app.get('/attendancedata.json', async (req, res) => {
