@@ -315,6 +315,13 @@ app.get("/count-main", async (req, resp) => {
     let count = keys.length - 1;
     resp.json({ count });
 });
+app.get("/count-main/second", async (req, resp) => {
+    await loadAllData();
+
+    const keys = Object.keys(attendanceData);
+    let count = keys.length - 1 - 3327;
+    resp.json({ count });
+})
 app.get('/attendancedata.json', async (req, res) => {
     await loadAllData();
     res.json({ attendanceData });
